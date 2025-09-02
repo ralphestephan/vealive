@@ -2,8 +2,8 @@
 const nextConfig = {
   images: {
     remotePatterns: [
-      { protocol: 'https', hostname: 'vaety.com', pathname: '/cdn/**' },
-      { protocol: 'http', hostname: 'vaety.com', pathname: '/cdn/**' },
+      { protocol: 'https', hostname: 'vealive360.com', pathname: '/cdn/**' },
+      { protocol: 'http', hostname: 'vealive360.com', pathname: '/cdn/**' },
       { protocol: 'https', hostname: '**.myshopify.com', pathname: '/**' }
     ]
   }
