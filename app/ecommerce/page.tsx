@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     url: `${SITE.baseUrl}/ecommerce`,
     images: [{ url: SITE.ogImage }],
   },
-  twitter: { card: "summary_large_image", site: SITE.twitter },
+  twitter: { card: "summary_large_image", site: "@vealive360" },
 };
 
 const products = [

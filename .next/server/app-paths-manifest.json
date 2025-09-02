@@ -1,5 +1,4 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
   "/solutions/page": "app/solutions/page.js",
   "/solutions/[slug]/page": "app/solutions/[slug]/page.js",
   "/homedome/page": "app/homedome/page.js",
