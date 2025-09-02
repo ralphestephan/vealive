@@ -1,17 +1,17 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/page": "app/page.js",
   "/robots.txt/route": "app/robots.txt/route.js",
   "/sitemap.xml/route": "app/sitemap.xml/route.js",
   "/ecommerce/page": "app/ecommerce/page.js",
-  "/contact/page": "app/contact/page.js",
   "/faqs/page": "app/faqs/page.js",
-  "/about/page": "app/about/page.js",
-  "/homedome/page": "app/homedome/page.js",
-  "/insights/[slug]/page": "app/insights/[slug]/page.js",
-  "/solutions/page": "app/solutions/page.js",
   "/insights/page": "app/insights/page.js",
+  "/homedome/page": "app/homedome/page.js",
+  "/contact/page": "app/contact/page.js",
+  "/about/page": "app/about/page.js",
+  "/page": "app/page.js",
+  "/insights/[slug]/page": "app/insights/[slug]/page.js",
   "/solutions/[slug]/page": "app/solutions/[slug]/page.js",
+  "/solutions/page": "app/solutions/page.js",
   "/terms/page": "app/terms/page.js",
   "/privacy/page": "app/privacy/page.js"
 }

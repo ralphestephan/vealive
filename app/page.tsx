@@ -10,13 +10,47 @@ import CTA from "@/components/CTA";
 import TrustSignals from "@/components/TrustSignals";
 import Services from "@/components/Services";
 import  SmartDomePromo from "@/components/SmartDomePromo";
+import { SITE } from "@/lib/site";
+import SEOJsonLd from "@/components/SEOJsonLd";
 
 import type { Metadata } from "next";
-
+export const metadata: Metadata = {
+  title: "VeaLive360 | Smart Home Automation in Beirut",
+  description:
+    "VeaLive designs presence-aware, privacy-first smart home solutions in Beirut. Open-ecosystem integrations and DIY innovation to bring your home to life.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "VeaLive360 HomePage",
+    description:
+      "You dream it—we make it. Presence-aware smart living that’s private, open-ecosystem, and locally supported. Explore our 360° approach and Smart Dome concept.",
+    url: `${SITE.baseUrl}/about`,
+    images: [{ url: SITE.ogImage }],
+  },
+  twitter: { card: "summary_large_image", site: "@vealive360" },
+};
 
 export default function Page() {
 return (
 <div className="py-8">
+    <SEOJsonLd
+          data={{
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: SITE.org.legalName,
+            url: SITE.org.url,
+            logo: SITE.org.logo,
+            sameAs: SITE.org.sameAs,
+            contactPoint: [
+              {
+                "@type": "ContactPoint",
+                telephone: SITE.contact.phone,
+                contactType: "customer service",
+                areaServed: "LB",
+                availableLanguage: ["en", "ar", "fr"],
+              },
+            ],
+          }}
+        />
 <Hero />
 <Services />
 <div className="relative mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">

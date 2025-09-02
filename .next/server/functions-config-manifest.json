@@ -1,1 +1,1 @@
-{"version":1,"functions":{"/faqs":{},"/ecommerce":{},"/contact":{},"/about":{},"/insights":{},"/homedome":{},"/privacy":{},"/insights/[slug]":{},"/solutions":{},"/terms":{},"/solutions/[slug]":{}}}
+{"version":1,"functions":{"/faqs":{},"/ecommerce":{},"/contact":{},"/about":{},"/insights":{},"/":{},"/homedome":{},"/insights/[slug]":{},"/privacy":{},"/solutions":{},"/solutions/[slug]":{},"/terms":{}}}
