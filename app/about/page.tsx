@@ -1,4 +1,3 @@
-// app/about/page.tsx
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -72,7 +71,7 @@ export default function Page() {
           <p className="text-lg text-zinc-700 max-w-[620px]">
             Beirut-based studio crafting personalized, presence-aware smart home
             automation. From DIY 3D-printed devices to pro-grade integrations—local,
-            private by design, and tuned to your daily routines.
+            private by design, and tuned to your daily routines. <strong>We tailor devices to meet each client’s needs.</strong>
           </p>
           <div className="flex gap-3">
             <Link
@@ -93,7 +92,7 @@ export default function Page() {
         <div className={`relative rounded-card overflow-hidden card ${rings.blue}`}>
           <div className="absolute inset-0 gradient-brand opacity-25 pointer-events-none" />
           <Image
-            src="/images/PHOTO-2025-05-08-19-32-52.jpg" // your local hero image
+            src="/images/PHOTO-2025-05-08-19-32-52.jpg"
             alt="VeaLive smart home automation and responsive living spaces"
             width={550}
             height={400}
@@ -188,9 +187,9 @@ export default function Page() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { k: "7+", v: "Years delivering", tone: "blue" as const },
-              { k: "21", v: "Spaces improved", tone: "green" as const },
-              { k: "99.9%", v: "Uptime targets", tone: "blue" as const },
-              { k: "24/7", v: "Care & support", tone: "green" as const },
+              { k: "3+", v: "Spaces improved", tone: "green" as const },           // changed 21 → 2
+              { k: "2", v: "Devices created", tone: "blue" as const },            // new stat
+              { k: "90%", v: "Uptime Targets", tone: "green" as const },
             ].map(({ k, v, tone }) => (
               <Card
                 key={v}
@@ -205,6 +204,77 @@ export default function Page() {
           </div>
         </div>
       </section>
+
+{/* MEET THE TEAM (match section/card styling) */}
+<section className="py-16 relative overflow-x-clip">
+  <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+  <div className="mx-auto max-w-6xl px-4">
+    {/* title block — same pattern as other sections */}
+    <div className="text-center mb-12">
+      <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+        People behind VeaLive
+      </span>
+      <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
+        <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+          Meet the team
+        </span>
+      </h2>
+      <p className="text-zinc-600 max-w-[720px] mx-auto mt-2">
+        Engineers and makers who tailor devices and systems around your routines.
+      </p>
+      <span className="mt-3 mx-auto block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
+    </div>
+
+    {/* cards — same card recipe used elsewhere */}
+    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+      {[
+        {
+          name: "Mohammad Wazzan",
+          role: "Founder & CEO",
+          img: "/images/wazzn.jpg",
+        },
+        {
+          name: "Ralph Estephan",
+          role: "Co-founder & Tech Lead",
+          img: "/images/ralph.jpg",
+        },
+        {
+          name: "George Mouannes",
+          role: "Electro-Mechanical Engineer",
+          img: "/images/george.jpg",
+        },
+      ].map((p) => (
+        <div
+          key={p.name}
+          className="group p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow relative overflow-hidden"
+        >
+          {/* subtle brand wash like other cards */}
+          <div className="pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full bg-brand-blue/5 blur-2xl" />
+          <div className="flex flex-col items-center text-center">
+            <div className="w-28 h-28 rounded-full overflow-hidden ring-1 ring-zinc-200">
+              <Image
+                src={p.img}
+                alt={`${p.name} — ${p.role}`}
+                width={160}
+                height={160}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <div className="mt-4 font-semibold text-zinc-900">{p.name}</div>
+            <div className="mt-1 text-sm text-zinc-600">{p.role}</div>
+
+            {/* small pill to mirror chips elsewhere */}
+            <span className="mt-3 inline-flex items-center px-2.5 py-1 rounded-full bg-zinc-100 text-xs text-zinc-700">
+              VeaLive 360
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
 
       {/* MISSION & VALUES */}
       <section className="py-16 relative overflow-x-clip">
@@ -229,9 +299,7 @@ export default function Page() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="p-6 rounded-card bg-white hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-3">
-                <span
-                  className={`w-10 h-10 rounded-lg ${chips.blue} inline-flex items-center justify-center`}
-                >
+                <span className={`w-10 h-10 rounded-lg ${chips.blue} inline-flex items-center justify-center`}>
                   <Target className="w-5 h-5" aria-hidden />
                 </span>
                 <h3 className="text-xl font-bold">Our Mission</h3>
@@ -244,9 +312,7 @@ export default function Page() {
 
             <div className="p-6 rounded-card bg-white  hover:shadow-lg transition-shadow">
               <div className="flex items-center gap-3 mb-3">
-                <span
-                  className={`w-10 h-10 rounded-lg ${chips.blue} inline-flex items-center justify-center`}
-                >
+                <span className={`w-10 h-10 rounded-lg ${chips.blue} inline-flex items-center justify-center`}>
                   <Lightbulb className="w-5 h-5" aria-hidden />
                 </span>
                 <h3 className="text-xl font-bold">Our Vision</h3>
@@ -268,9 +334,7 @@ export default function Page() {
                 key={label}
                 className="p-6 rounded-card bg-white border  shadow-soft hover:shadow-lg transition-shadow text-center"
               >
-                <div
-                  className={`w-10 h-10 rounded-lg ${chips[tone]} flex items-center justify-center mx-auto mb-3`}
-                >
+                <div className={`w-10 h-10 rounded-lg ${chips[tone]} flex items-center justify-center mx-auto mb-3`}>
                   <Icon className="w-5 h-5" />
                 </div>
                 <h3 className="font-bold">{label}</h3>

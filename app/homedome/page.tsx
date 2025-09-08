@@ -137,57 +137,64 @@ export default function Page() {
         </div>
       </section>
 
-      {/* WHY IT MATTERS + STICKY SPECS */}
-      <section className="py-16">
-        <div className="mx-auto max-w-6xl px-4 grid md:grid-cols-3 gap-8">
-          <div className="md:col-span-2 space-y-6">
-            <h2 className="text-2xl font-semibold">Why it matters</h2>
+{/* WHY IT MATTERS + STICKY SPECS */}
+<section className="py-16" aria-labelledby="why-it-matters">
+  <div className="mx-auto max-w-6xl px-4 grid md:grid-cols-3 gap-8 lg:gap-12">
+    {/* Copy */}
+    <div className="md:col-span-2 md:pr-8 lg:pr-12 space-y-5 md:space-y-6">
+      <div>
+        <h2 id="why-it-matters" className="text-2xl md:text-3xl font-extrabold tracking-tight">
+          Why it matters
+        </h2>
+        <span className="mt-3 block h-1 w-16 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
+      </div>
 
-            <p className="text-zinc-700">
-              The dome form isn’t just striking—it’s efficient. With less surface area for the same
-              volume, it naturally limits heat gain and loss, sheds wind and rain, and distributes
-              loads evenly. Fewer thermal bridges, fewer weak points, greater comfort.
-            </p>
+      <p className="text-zinc-700/95 text-base md:text-lg leading-7 md:leading-8 text-pretty md:text-balance max-w-[68ch]">
+        The dome form isn’t just striking—it’s efficient. With less surface area for the same
+        volume, it naturally limits heat gain and loss, sheds wind and rain, and distributes
+        loads evenly. Fewer thermal bridges, fewer weak points, greater comfort.
+      </p>
 
-            <p className="text-zinc-700">
-              Pre-engineered, numbered panels click together with minimal disruption. High-performance
-              insulation and gasketed seams create a tight envelope, while optional low-E glazing and
-              smart shading deliver daylight without the heat. The result is a calm, stable interior year-round.
-            </p>
+      <p className="text-zinc-700/95 text-base md:text-lg leading-7 md:leading-8 text-pretty md:text-balance max-w-[68ch]">
+        Pre-engineered, numbered panels click together with minimal disruption. High-performance
+        insulation and gasketed seams create a tight envelope, while optional low-E glazing and
+        smart shading deliver daylight without the heat. The result is a calm, stable interior year-round.
+      </p>
 
-            <p className="text-zinc-700">
-              Smart Dome is automation-native: sensors watch air quality, occupancy, temperature, and light,
-              so scenes adapt from wake to sleep without micromanaging. Installation is rapid—onto anchors
-              or a light foundation, then power/data the same day. Ideal for rooftops, gardens, or remote plots,
-              and it scales from a single studio to linked clusters.
-            </p>
-          </div>
+      <p className="text-zinc-700/95 text-base md:text-lg leading-7 md:leading-8 text-pretty md:text-balance max-w-[68ch]">
+        Smart Dome is automation-native: sensors watch air quality, occupancy, temperature, and light,
+        so scenes adapt from wake to sleep without micromanaging. Installation is rapid—onto anchors
+        or a light foundation, then power/data the same day. Ideal for rooftops, gardens, or remote plots,
+        and it scales from a single studio to linked clusters.
+      </p>
+    </div>
 
-          <aside className="space-y-4 md:sticky md:top-20 h-fit">
-            <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
-              <h4 className="font-semibold mb-2">Specs snapshot</h4>
-              <ul className="text-sm text-zinc-700 space-y-1">
-                <li>Footprint: 25–80 m² modules</li>
-                <li>Power: 220–240V • Solar ready</li>
-                <li>Connectivity: Wi-Fi, Zigbee, Matter</li>
-                <li>Control: App, Voice, Wall panels</li>
-              </ul>
-            </div>
-            <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
-              <h4 className="font-semibold mb-2">Get a quote</h4>
-              <p className="text-sm text-zinc-600">
-                Tell us about your project and location—our team will prepare a tailored plan.
-              </p>
-              <Link
-                href="/contact"
-                className="inline-flex mt-3 h-10 items-center justify-center rounded-full px-4 bg-brand-blue text-white font-semibold"
-              >
-                Contact sales
-              </Link>
-            </div>
-          </aside>
-        </div>
-      </section>
+    {/* Sticky sidebar */}
+    <aside className="space-y-4 md:sticky md:top-24 self-start h-fit">
+      <div className="p-6 rounded-card bg-white border border-zinc-100 ring-1 ring-brand-blue/10 shadow-soft">
+        <h4 className="font-semibold mb-2">Specs snapshot</h4>
+        <ul className="text-sm text-zinc-700/95 space-y-1">
+          <li>Footprint: 25–80 m² modules</li>
+          <li>Power: 220–240V • Solar ready</li>
+          <li>Connectivity: Wi-Fi, Zigbee, Matter</li>
+          <li>Control: App, Voice, Wall panels</li>
+        </ul>
+      </div>
+      <div className="p-6 rounded-card bg-white border border-zinc-100 ring-1 ring-brand-blue/10 shadow-soft">
+        <h4 className="font-semibold mb-2">Get a quote</h4>
+        <p className="text-sm text-zinc-600">
+          Tell us about your project and location—our team will prepare a tailored plan.
+        </p>
+        <Link
+          href="/contact"
+          className="inline-flex mt-3 h-10 items-center justify-center rounded-full px-4 bg-brand-blue text-white font-semibold"
+        >
+          Contact sales
+        </Link>
+      </div>
+    </aside>
+  </div>
+</section>
 
       {/* TRUST + CTA */}
       <CTA />

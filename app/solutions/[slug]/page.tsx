@@ -2,7 +2,7 @@
 import solutions from "@/data/solutions";
 import Image from "next/image";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import CTA from "@/components/CTA";
 import TrustSignals from "@/components/TrustSignals";
 import type { Metadata } from "next";
@@ -10,92 +10,232 @@ import { SITE } from "@/lib/site";
 import SEOJsonLd from "@/components/SEOJsonLd";
 import {
   CheckCircle,
-  // tech icons
-  Lightbulb,
-  Thermometer,
-  Droplets,
-  Fan,
-  Shield,
-  Camera,
-  Lock,
-  Siren,
-  Speaker,
-  Tv,
-  Router,
-  Cpu,
-  Activity, // replaced Waveform with Activity
-  Sprout,
-  Coffee,
-  WashingMachine,
-  Refrigerator,
+  // base
+  Lightbulb, Thermometer, Droplets, Fan, Router, Cpu, Activity, Sprout, Plug,
+  Gauge, BarChart3, ShoppingCart, CreditCard, Cog, Truck, Package, Bluetooth,
+  Wrench, Code, Bolt,
+  // bulky icon set for “tech used”
+  Sun, Moon, Timer, Clock, Shield, ShieldCheck, ShieldAlert,
+  Wifi, Antenna, Cable, Server, Database, HardDrive, Cloud, CloudCog,
+  Tablet, Smartphone, QrCode, Barcode, Box, Boxes, BadgeCheck, ClipboardList,
+  Settings, SlidersHorizontal, Battery, BatteryCharging, Snowflake, Wind,
+  Home, KeyRound, MapPin, Globe, Rss, Usb, IdCard, Zap, LayoutGrid, Layers,
+  Camera, Lock
 } from "lucide-react";
 
 type Props = { params: { slug: string } };
 
-// Prebuild static paths
+// ---------- Canonical slugs (NEW) ----------
+type NewSlug =
+  | "home-automation"
+  | "device-tailoring"
+  | "energy-monitoring"
+  | "utility-integration";
+
+// Old → New alias map (backward compat)
+const SLUG_ALIASES: Record<string, NewSlug> = {
+  lighting: "home-automation",
+  security: "device-tailoring",
+  climate: "energy-monitoring",
+  utility: "utility-integration",
+};
+
+// Helper: resolve incoming slug to canonical new slug
+function resolveCanonicalSlug(input: string): NewSlug | null {
+  const newSlugs = new Set<NewSlug>([
+    "home-automation",
+    "device-tailoring",
+    "energy-monitoring",
+    "utility-integration",
+  ]);
+  if (newSlugs.has(input as NewSlug)) return input as NewSlug;
+  return SLUG_ALIASES[input] ?? null;
+}
+
+// Prebuild static paths ONLY from what’s in data (supports either state)
 export function generateStaticParams() {
+  // If your data file already uses new slugs, these will be the new ones.
+  // If it still has old slugs, Next will statically build those too,
+  // but at runtime we’ll redirect to canonical.
   return solutions.map((s) => ({ slug: s.slug }));
 }
 
-// Metadata
+// Metadata (canonicalized)
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const s = solutions.find((x) => x.slug === params.slug);
+  const canonical = resolveCanonicalSlug(params.slug);
+  const s = solutions.find((x) => x.slug === (canonical ?? params.slug));
   if (!s) return { title: "Solution" };
   return {
     title: s.heading,
     description: s.description,
-    alternates: { canonical: `/solutions/${params.slug}` },
+    alternates: { canonical: `/solutions/${canonical ?? s.slug}` },
     openGraph: { images: s.image ? [s.image] : undefined },
   };
 }
 
-// ------- NEW: technology icons by solution slug -------
+// Badge labels
+const BADGE_BY_SLUG: Record<NewSlug, string> = {
+  "home-automation": "Home Automation",
+  "device-tailoring": "Device Tailoring",
+  "energy-monitoring": "Energy Monitoring",
+  "utility-integration": "Utility E-Shop Integration",
+};
+
+// Massive “tech used” chip lists
 const TECH_BY_SLUG: Record<
-  string,
+  NewSlug,
   { label: string; Icon: React.ComponentType<{ className?: string }> }[]
 > = {
-  lighting: [
-    { label: "Smart lamps & bulbs", Icon: Lightbulb },
-    { label: "Dimmers & keypads", Icon: Activity }, // replaced Waveform with Activity
-    { label: "Presence sensors", Icon: Cpu },
-    { label: "Lux sensors", Icon: Sprout },
-    { label: "Bridge / Thread", Icon: Router },
-  ],
-  climate: [
-    { label: "Thermostats", Icon: Thermometer },
-    { label: "Fans / ventilation", Icon: Fan },
-    { label: "Humidifier / dehumidifier", Icon: Droplets },
-    { label: "Air quality sensors", Icon: Sprout },
-    { label: "HVAC bridge", Icon: Router },
-  ],
-  security: [
-    { label: "Cameras & doorbells", Icon: Camera },
-    { label: "Smart locks", Icon: Lock },
-    { label: "Sirens", Icon: Siren },
-    { label: "Motion / contact sensors", Icon: Shield },
-    { label: "Leak & smoke sensors", Icon: Droplets },
-  ],
-  entertainment: [
-    { label: "Speakers / amps", Icon: Speaker },
-    { label: "TV & streaming", Icon: Tv },
+  // HOME AUTOMATION
+  "home-automation": [
+    { label: "Automation engine", Icon: Cpu },
+    { label: "Presence graph", Icon: Activity },
     { label: "Scene lighting", Icon: Lightbulb },
-    { label: "Presence control", Icon: Cpu },
-    { label: "Network hub", Icon: Router },
+    { label: "Time & circadian", Icon: Sun },
+    { label: "Night modes", Icon: Moon },
+    { label: "Thread / Zigbee / Wi-Fi", Icon: Router },
+    { label: "Voice & wall control", Icon: Plug },
+    { label: "Motion / lux sensors", Icon: Sprout },
+    { label: "Schedules & timers", Icon: Timer },
+    { label: "Occupancy fusion", Icon: Gauge },
+    { label: "Network reliability", Icon: Wifi },
+    { label: "Hubs & bridges", Icon: Antenna },
+    { label: "Local-first logic", Icon: ShieldCheck },
+    { label: "Cloud sync (opt.)", Icon: Cloud },
+    { label: "Dashboards & app", Icon: LayoutGrid },
+    { label: "Rooms & zones", Icon: Layers },
+    { label: "Camera monitoring", Icon: Camera },
+    { label: "Door notifications", Icon: Lock },
   ],
-  utility: [
-    { label: "Coffee / kettle", Icon: Coffee },
-    { label: "Washer / dryer", Icon: WashingMachine },
-    { label: "Fridge monitor", Icon: Refrigerator },
-    { label: "Air purifiers", Icon: Fan },
-    { label: "Bridge / relays", Icon: Router },
+
+  // DEVICE TAILORING
+  "device-tailoring": [
+    { label: "Firmware profiles", Icon: Code },
+    { label: "OTA updates", Icon: Rss },
+    { label: "Calibration flows", Icon: Gauge },
+    { label: "Custom enclosures", Icon: Package },
+    { label: "Cable harnessing", Icon: Cable },
+    { label: "Sensor kits (VOC/CO₂)", Icon: Droplets },
+    { label: "Protocol bridges", Icon: Bluetooth },
+    { label: "USB / UART tools", Icon: Usb },
+    { label: "SD logging", Icon: IdCard },
+    { label: "Device IDs / QR", Icon: QrCode },
+    { label: "Barcode provisioning", Icon: Barcode },
+    { label: "Install & tuning", Icon: Wrench },
+    { label: "Fail-safe defaults", Icon: ShieldCheck },
+    { label: "Rollbacks & versions", Icon: Layers },
+    { label: "Security keys", Icon: KeyRound },
+    { label: "Acceptance testing", Icon: BadgeCheck },
+  ],
+
+  // ENERGY MONITORING
+  "energy-monitoring": [
+    { label: "CT clamps / DIN meters", Icon: Bolt },
+    { label: "Smart plugs (power)", Icon: Plug },
+    { label: "Panel mapping", Icon: Layers },
+    { label: "Per-circuit analytics", Icon: BarChart3 },
+    { label: "Live kW / kWh", Icon: Gauge },
+    { label: "Peak-load shifting", Icon: Clock },
+    { label: "HVAC tie-in", Icon: Thermometer },
+    { label: "RH / PM sensors", Icon: Droplets },
+    { label: "Ventilation link", Icon: Fan },
+    { label: "Tariff profiles", Icon: ClipboardList },
+    { label: "Alerts & anomalies", Icon: ShieldAlert },
+    { label: "Data exports", Icon: Database },
+    { label: "Data retention", Icon: HardDrive },
+    { label: "Edge gateway", Icon: Server },
+    { label: "Cloud pipelines", Icon: CloudCog },
+    { label: "Solar / battery", Icon: BatteryCharging },
+  ],
+
+  // UTILITY E-SHOP INTEGRATION
+  "utility-integration": [
+    { label: "Catalog mapping", Icon: ShoppingCart },
+    { label: "Compatibility matrix", Icon: Boxes },
+    { label: "Room/scene presets", Icon: Home },
+    { label: "Auto-provisioning", Icon: Cog },
+    { label: "Secure pairing", Icon: Shield },
+    { label: "Payments & warranty", Icon: CreditCard },
+    { label: "Serial tracking", Icon: Box },
+    { label: "Install scheduling", Icon: Truck },
+    { label: "Order webhooks", Icon: Cloud },
+    { label: "Device naming", Icon: Settings },
+    { label: "Policy templates", Icon: ClipboardList },
+    { label: "User accounts", Icon: Smartphone },
+    { label: "Multi-site support", Icon: Globe },
+    { label: "Geo / address book", Icon: MapPin },
+    { label: "Bridges / relays", Icon: Router },
+    { label: "RMA & swap flow", Icon: ShieldAlert },
+  ],
+};
+
+// Highlights & Expectations
+const HIGHLIGHTS_BY_SLUG: Record<NewSlug, string[]> = {
+  "home-automation": [
+    "Presence-aware scenes across rooms",
+    "Unified control: wall, app, voice",
+    "Local-first reliability with cloud extras",
+  ],
+  "device-tailoring": [
+    "Hardware that fits your space",
+    "Safer defaults & OTA updates",
+    "Bridges for mixed-protocol gear",
+  ],
+  "energy-monitoring": [
+    "Granular usage by circuit & device",
+    "Actionable KPIs and anomaly alerts",
+    "Automations for demand-shift savings",
+  ],
+  "utility-integration": [
+    "Cart-to-commissioning in one flow",
+    "Zero-touch pairing & naming",
+    "Receipts, serials, warranty—tracked",
+  ],
+};
+
+const EXPECT_BY_SLUG: Record<NewSlug, string[]> = {
+  "home-automation": [
+    "Automations that adapt to time, presence and ambient conditions.",
+    "Clean, open integrations (Apple / Google / Alexa).",
+    "Privacy-respecting defaults with local control where possible.",
+  ],
+  "device-tailoring": [
+    "Device behaviour tailored to your routines and layout.",
+    "Custom housings that blend with interiors and protect wiring.",
+    "OTA updates, diagnostics and rollback-safe profiles.",
+  ],
+  "energy-monitoring": [
+    "Live and historical energy dashboards per room/device.",
+    "Peak-hour load shedding and task shifting automations.",
+    "Exports for audits and sustainability reporting.",
+  ],
+  "utility-integration": [
+    "Products mapped to rooms, scenes and hubs automatically.",
+    "Secure payments with warranty & serial management.",
+    "On-site install, provisioning and remote diagnostics.",
   ],
 };
 
 export default function Page({ params }: Props) {
-  const s = solutions.find((x) => x.slug === params.slug);
+  const canonical = resolveCanonicalSlug(params.slug);
+  if (!canonical) return notFound();
+
+  // Redirect any old slug to the new canonical URL
+  if (canonical !== params.slug) {
+    redirect(`/solutions/${canonical}`);
+  }
+
+  // Find solution using canonical slug (works whether your data is already migrated or not)
+  const s =
+    solutions.find((x) => x.slug === canonical) ||
+    solutions.find((x) => SLUG_ALIASES[x.slug as string] === canonical);
+
   if (!s) return notFound();
 
-  const tech = TECH_BY_SLUG[params.slug] ?? [];
+  const tech = TECH_BY_SLUG[canonical];
+  const highlights = HIGHLIGHTS_BY_SLUG[canonical];
+  const expect = EXPECT_BY_SLUG[canonical];
+  const badge = BADGE_BY_SLUG[canonical];
 
   return (
     <div className="w-full overflow-x-clip">
@@ -117,10 +257,7 @@ export default function Page({ params }: Props) {
       {/* HERO */}
       <section className="mt-10 mb-16">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          
           <div className="space-y-6">
-
-          
             <div>
               <Link
                 href="/solutions"
@@ -130,15 +267,19 @@ export default function Page({ params }: Props) {
                 <span aria-hidden>←</span> Back to all solutions
               </Link>
             </div>
+
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-              Smart {s.slug}
+              {badge}
             </span>
+
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
               <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
                 {s.heading}
               </span>
             </h1>
+
             <p className="text-lg text-zinc-700 max-w-[640px]">{s.description}</p>
+
             <div className="flex gap-3 pt-1">
               <Link
                 href="/contact"
@@ -173,61 +314,57 @@ export default function Page({ params }: Props) {
         </div>
       </section>
 
-      {/* ------- NEW: Technologies we use ------- */}
-      {tech.length > 0 && (
-        <section className="mb-10">
-          <div className="mx-auto max-w-6xl px-4">
-            <div className="rounded-card bg-white border border-zinc-100 shadow-soft p-6">
-              <div className="flex items-center justify-between gap-4 flex-wrap">
-                <div>
-                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                    Stack preview
-                  </span>
-                  <h2 className="mt-2 text-xl font-bold">Technologies we use</h2>
-                  <p className="text-sm text-zinc-600">
-                    A quick look at typical devices and hubs we combine in this category.
-                  </p>
-                </div>
+      {/* Technologies we use */}
+      <section className="mb-10">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="rounded-card bg-white border border-zinc-100 shadow-soft p-6">
+            <div className="flex items-center justify-between gap-4 flex-wrap">
+              <div>
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+                  Stack preview
+                </span>
+                <h2 className="mt-2 text-xl font-bold">Technologies we use</h2>
+                <p className="text-sm text-zinc-600">
+                  Typical devices, bridges and software we combine for this solution.
+                </p>
+              </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 w-full md:w-auto mt-4 md:mt-0">
-                  {tech.map(({ label, Icon }) => (
-                    <div
-                      key={label}
-                      className="flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2"
-                      title={label}
-                    >
-                      <span className="inline-grid place-items-center h-8 w-8 rounded-full bg-white border border-zinc-200">
-                        <Icon className="h-4 w-4 text-zinc-700" />
-                      </span>
-                      <span className="text-xs font-medium text-zinc-700">{label}</span>
-                    </div>
-                  ))}
-                </div>
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-3 w-full md:w-auto mt-4 md:mt-0">
+                {tech.map(({ label, Icon }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2"
+                    title={label}
+                  >
+                    <span className="inline-grid place-items-center h-8 w-8 rounded-full bg-white border border-zinc-200">
+                      <Icon className="h-4 w-4 text-zinc-700" />
+                    </span>
+                    <span className="text-xs font-medium text-zinc-700">{label}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
 
       {/* HIGHLIGHTS */}
       <section className="pb-6">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {["Presence-aware scenes", "Automations for comfort & wellness", "Elegant, seamless design"].map(
-            (item, i) => (
-              <article
-                key={i}
-                className="p-6 rounded-card shadow-soft bg-white border border-zinc-100 hover:shadow-lg transition-shadow"
-              >
-                <div className="flex items-center gap-2 mb-2 text-brand-blue">
-                  <CheckCircle className="h-5 w-5" aria-hidden />
-                  <h3 className="font-bold">{item}</h3>
-                </div>
-                <p className="text-sm text-zinc-600">
-                  Tailored to your routines with VeaLive’s curated devices and flows.
-                </p>
-              </article>
-            )
-          )}
+          {highlights.map((item, i) => (
+            <article
+              key={i}
+              className="p-6 rounded-card shadow-soft bg-white border border-zinc-100 hover:shadow-lg transition-shadow"
+            >
+              <div className="flex items-center gap-2 mb-2 text-brand-blue">
+                <CheckCircle className="h-5 w-5" aria-hidden />
+                <h3 className="font-bold">{item}</h3>
+              </div>
+              <p className="text-sm text-zinc-600">
+                Tailored to your routines with VeaLive’s curated devices and flows.
+              </p>
+            </article>
+          ))}
         </div>
       </section>
 
@@ -240,11 +377,7 @@ export default function Page({ params }: Props) {
               What you can expect
             </span>
             <ul className="mt-4 space-y-2 text-zinc-700">
-              {[
-                "Clean, open integrations (Apple / Google / Alexa, wired or wireless).",
-                "Scenes that adapt by time, presence, and ambient conditions.",
-                "Privacy-respecting defaults with local control where possible.",
-              ].map((t) => (
+              {EXPECT_BY_SLUG[canonical].map((t) => (
                 <li key={t} className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-brand-blue shrink-0 mt-0.5" />
                   <span>{t}</span>
@@ -258,25 +391,38 @@ export default function Page({ params }: Props) {
               Getting started
             </span>
             <p className="mt-3 text-zinc-600">
-              Share your space, goals, and preferred platforms. We map quick wins, propose a
-              roadmap, and implement with tidy install and follow-up tuning.
+              {canonical === "utility-integration"
+                ? "Add devices to cart and choose ‘Install & Provision’. We’ll schedule on-site setup, pair everything, and hand over a clean dashboard with warranty details."
+                : canonical === "energy-monitoring"
+                ? "Share your main panel layout and target devices. We’ll plan CT placements, dashboards, and automations for easy efficiency wins."
+                : canonical === "device-tailoring"
+                ? "Tell us about your space and constraints. We’ll spec hardware, tailor firmware profiles, and deliver calibrated, update-safe setups."
+                : "Share your space, habits and preferred platforms. We’ll map quick wins, set a roadmap, and implement with tidy install and follow-up tuning."}
             </p>
             <div className="mt-4 flex gap-3">
               <Link href="/contact" className="px-5 py-3 rounded-full bg-brand-blue text-white font-semibold">
                 Start your plan
               </Link>
-              <Link
-                href="/ecommerce"
-                className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue"
-              >
-                Browse devices
-              </Link>
+              {canonical === "utility-integration" ? (
+                <Link
+                  href="/ecommerce"
+                  className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue"
+                >
+                  Shop compatible devices
+                </Link>
+              ) : (
+                <Link
+                  href="/solutions"
+                  className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue"
+                >
+                  Explore other solutions
+                </Link>
+              )}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Closing rhythm */}
       <CTA />
       <TrustSignals />
     </div>

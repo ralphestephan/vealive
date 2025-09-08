@@ -17,7 +17,7 @@ export default function SolutionCard({ slug, title, description, image }: Props)
 
       <div className="relative h-48 md:h-56 w-full">
         <Image
-          src={image || "https://vaety.com/cdn/shop/files/website.png?v=1748889700"}
+          src={image || "/images/placeholders/solution-default.jpg"}
           alt={title}
           fill
           sizes="(min-width:1024px) 380px, (min-width:640px) 340px, 280px"

@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import SolutionsGrid from "@/components/SolutionsGrid";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { CheckCircle, Shield, Lightbulb, Thermometer, Tv, Bot} from "lucide-react";
+import { CheckCircle, Shield, Lightbulb, Thermometer, Tv, Bot, Wrench, Puzzle, Sliders, Cpu, Sparkles} from "lucide-react";
 import CTA from "@/components/CTA";
 import TrustSignals from "@/components/TrustSignals";
 import Process from "@/components/Process";
@@ -105,24 +105,51 @@ function Block({
 export default function Page() {
   return (
     <div className="w-full overflow-x-clip">
-      {/* HERO */}
-      <section className="mt-10 mb-12">
-        <div className="mx-auto max-w-6xl px-4 text-center">
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-            Tailored to your lifestyle
-          </span>
-          <h1 className="mt-2 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
-            <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
-              Solutions by VeaLive360
-            </span>
-          </h1>
-          <p className="mt-3 text-zinc-700 max-w-2xl mx-auto">
-            From lighting to climate and security, we curate personalized automation that
-            senses you—designed for wellness, comfort, and simplicity across Beirut and beyond.
-          </p>
-          <span className="mt-4 mx-auto block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
-        </div>
-      </section>
+{/* HERO */}
+<section className="mt-10 mb-12">
+  <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+    {/* Left: copy (not centered) */}
+    <div className="order-2 md:order-1">
+      <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+        Tailored to your lifestyle
+      </span>
+      <h1 className="mt-2 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
+        <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+          Solutions by VeaLive360
+        </span>
+      </h1>
+      <p className="mt-3 text-zinc-700 max-w-xl">
+        From lighting to climate and security, we curate personalized automation that
+        senses you—designed for wellness, comfort, and simplicity across Beirut and beyond.
+      </p>
+      <span className="mt-4 block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
+      <div className="mt-6 flex gap-3">
+        <Link href="/contact" className="px-5 py-3 rounded-full bg-brand-blue text-white font-semibold">
+          Book a Free Consultation
+        </Link>
+
+      </div>
+    </div>
+
+{/* Right: hero image (constrained) */}
+<div className="order-1 md:order-2 relative rounded-card overflow-hidden ring-1 ring-brand-blue/10
+                h-64 sm:h-80 md:h-96 lg:h-[480px] xl:h-[1000px]">
+  <div className="absolute inset-0 gradient-brand opacity-15 pointer-events-none" />
+<Image
+  src="/images/gateway.png"
+  alt="VeaLive smart home"
+  fill
+  className="object-cover object-top md:object-[80%_12%] lg:object-[85%_15%]"
+  sizes="(min-width:1280px) 680px, (min-width:1024px) 560px, (min-width:768px) 50vw, 100vw"
+  priority
+/>
+
+</div>
+
+
+  </div>
+</section>
+
 
       {/* POPULAR SOLUTIONS (carousel) */}
       <section className="mb-2">
@@ -196,7 +223,7 @@ export default function Page() {
               <Block
                 title="Smart Security Solutions"
                 desc="Protect your home with cameras, smart locks, motion sensors, and presence simulation—managed from anywhere."
-                img="/images/placeholders/solution-security.jpg"
+                img="/images/security.png"
                 items={[
                   "Smart doorbell and camera installation",
                   "Smart lock integration",
@@ -210,7 +237,7 @@ export default function Page() {
               <Block
                 title="Smart Lighting Solutions"
                 desc="Transform ambiance with scenes, schedules, and sensors—controlled by app, voice, or presence."
-                img="/images/placeholders/solution-lighting.jpg"
+                img="/images/lighting.png"
                 items={[
                   "Smart bulb & switch installation",
                   "Lighting automation setup",
@@ -224,7 +251,7 @@ export default function Page() {
               <Block
                 title="Climate Control Solutions"
                 desc="Comfort that optimizes itself—smart thermostats, HVAC integration, and real-time energy insights."
-                img="/images/placeholders/solution-climate.jpg"
+                img="/images/climate.png"
                 items={[
                   "Smart thermostat installation",
                   "HVAC system integration",
@@ -238,7 +265,7 @@ export default function Page() {
               <Block
                 title="Smart Entertainment Solutions"
                 desc="Seamless audio/video across rooms with unified control for films, music, and streaming."
-                img="/images/placeholders/solution-entertainment.jpg"
+                img="/images/tv.png"
                 items={[
                   "Multi-room audio setup",
                   "Smart TV & streaming integration",
@@ -251,7 +278,7 @@ export default function Page() {
               <Block
                 title="Utility Automation Solutions"
                 desc="Automate everyday tasks—smart plugs, irrigation, appliance control, and chores management."
-                img="/images/placeholders/solution-utility.jpg"
+                img="/images/utility.png"
                 items={[
                   "Automated Pet Feeder",
                   "Cleaner Root",
@@ -263,6 +290,117 @@ export default function Page() {
           </Tabs>
         </div>
       </section>
+{/* DEVICE TAILORING */}
+<section className="py-16 relative overflow-x-clip">
+  <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+
+  <div className="mx-auto max-w-6xl px-4">
+    {/* title block */}
+    <div className="text-center mb-12">
+      <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+        You dream it — we make it
+      </span>
+      <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
+        <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+          Device tailoring
+        </span>
+      </h2>
+      <p className="text-zinc-600 max-w-[760px] mx-auto mt-2">
+        We design and 3D-print custom enclosures, embed the right sensors, and integrate
+        with your preferred ecosystem. From a one-off prototype to a batch, we tailor
+        devices to match your space, your routines, and your budget.
+      </p>
+      <span className="mt-3 mx-auto block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
+    </div>
+
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+      {/* Copy / features / CTA */}
+      <div className="group p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow relative overflow-hidden">
+        <div className="pointer-events-none absolute -top-14 -right-10 w-40 h-40 rounded-full bg-brand-blue/10 blur-3xl" />
+        <div className="inline-flex items-center px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-xs font-semibold">
+          Tailored builds
+        </div>
+
+        <ul className="mt-4 grid sm:grid-cols-2 gap-3">
+          {[
+            { Icon: Wrench, title: "Custom enclosures", body: "3D-printed housings that fit your interior." },
+            { Icon: Cpu, title: "Sensors & connectivity", body: "Wi-Fi, BLE, Zigbee, or wired — your call." },
+            { Icon: Puzzle, title: "Your ecosystem", body: "Apple, Google, Alexa, Home Assistant, etc." },
+            { Icon: Sliders, title: "Routines first", body: "Scenes tuned to presence, time, and mood." },
+          ].map(({ Icon, title, body }) => (
+            <li key={title} className="p-4 rounded-xl border border-zinc-100 bg-white/80 hover:bg-white">
+              <div className="flex items-start gap-3">
+                <span className="w-9 h-9 rounded-lg bg-brand-green/10 text-brand-green inline-flex items-center justify-center shrink-0">
+                  <Icon className="w-5 h-5" />
+                </span>
+                <div>
+                  <div className="text-sm font-semibold text-zinc-900">{title}</div>
+                  <div className="text-sm text-zinc-600">{body}</div>
+                </div>
+              </div>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <Link
+            href="/contact"
+            className="rounded-full bg-brand-blue px-5 py-3 text-white font-semibold"
+          >
+            Create your device
+          </Link>
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium text-zinc-700">
+            <Sparkles className="w-4 h-4" /> 2 devices created
+          </span>
+        </div>
+      </div>
+
+{/* Visuals: 2 device cards (consistent fill + bottom title) */}
+<div className="grid sm:grid-cols-2 gap-4">
+  {[
+    {
+      img: "/images/airguard.png",
+      title: "AirGuard",
+      desc: "Humidity, temperature, and air quality monitoring.",
+    },
+    {
+      // If you want to use the provided file directly, drop it in /public/images as rainguard.png
+      img: "/images/rainguard.png",
+      title: "RainGuard",
+      desc: "Window state detection and automated closure on rain.",
+    },
+  ].map((d) => (
+    <div
+      key={d.title}
+      className="relative rounded-card overflow-hidden ring-1 ring-brand-blue/10"
+    >
+      {/* fixed aspect so the image truly spans */}
+      <div className="relative w-full aspect-[4/5]">
+        <Image
+          src={d.img}
+          alt={d.title}
+          fill
+          className="object-cover"
+          sizes="(max-width: 768px) 100vw, 50vw"
+          priority={false}
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-black/5 to-transparent pointer-events-none" />
+      </div>
+
+      {/* bottom title strip */}
+      <div className="absolute inset-x-0 bottom-0">
+        <div className="p-4 bg-white/90 backdrop-blur">
+          <div className="font-semibold">{d.title}</div>
+          <div className="text-sm text-zinc-600">{d.desc}</div>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+    </div>
+  </div>
+</section>
 
       {/* HOW WE WORK */}
       <Process />

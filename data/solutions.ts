@@ -7,7 +7,11 @@ export type SolutionTech = {
 };
 
 export type Solution = {
-  slug: "lighting" | "climate" | "security" | "entertainment" | "utility";
+  slug:
+    | "home-automation"
+    | "device-tailoring"
+    | "energy-monitoring"
+    | "utility-integration"; 
   heading: string;
   description: string;
   image?: string;       // preferred hero/teaser image for this solution
@@ -15,93 +19,83 @@ export type Solution = {
 };
 
 const solutions: Solution[] = [
+  // HOME AUTOMATION
   {
-    slug: "lighting",
-    heading: "Smart Lighting that feels natural",
+    slug: "home-automation",
+    heading: "Home Automation that just works",
     description:
-      "Scenes that track time, presence and ambient lux—so mornings are bright and evenings wind down without fiddling.",
-    image: "/images/ChatGPT Image Sep 2, 2025, 03_54_09 PM.png", // replace with your own shot later
+      "Unified scenes, sensors and controls across lighting, climate and security—simple on the surface, powerful underneath.",
+    image: "/images/original-34e3648b2660753f76e823904d07dd90.gif",
     tech: [
       {
-        key: "tunable-white",
-        label: "Tunable white",
-        icon: "lightbulb",
-        blurb: "Warm to cool control along smooth dimming curves for circadian comfort.",
+        key: "automation-engine",
+        label: "Automation engine",
+        icon: "cpu",
+        blurb: "Event- and state-driven logic ties rooms, devices and routines together without conflicts.",
       },
       {
-        key: "sensors",
-        label: "Presence & lux sensors",
+        key: "presence-graph",
+        label: "Presence graph",
         icon: "gauge",
-        blurb: "Rooms respond to people and daylight, not just timers and switches.",
+        blurb: "Combines motion, phones and schedules so automations react to people, not just timers.",
       },
       {
-        key: "scenes",
-        label: "Daily scene curves",
-        icon: "sun",
-        blurb: "Gentle ramps across the day—no harsh jumps at 7pm.",
+        key: "multi-control",
+        label: "Multi-control",
+        icon: "smartphone",
+        blurb: "Wall switches, app and voice stay perfectly in sync with automations and scenes.",
       },
       {
-        key: "control",
-        label: "Voice & wall control",
-        icon: "speaker",
-        blurb: "Physical buttons, app and voice stay in sync with the automations.",
+        key: "mesh-backbone",
+        label: "Reliable mesh",
+        icon: "wifi",
+        blurb: "Thread/Zigbee/Wi-Fi mesh ensures fast, local control with graceful cloud fallbacks.",
       },
     ],
   },
 
+  // ENERGY MONITORING
   {
-    slug: "climate",
-    heading: "Comfort that optimizes itself",
+    slug: "energy-monitoring",
+    heading: "Energy Monitoring you can act on",
     description:
-      "Smart thermostats, quiet ventilation and air-quality logic that keeps rooms fresh without spikes.",
-    image: "/images/ChatGPT Image Sep 2, 2025, 03_56_10 PM.png",
+      "Live and historical usage per circuit, appliance and room—with alerts and automations to cut waste.",
+    image: "/images/energy.jpg",
     tech: [
-      { key: "thermostat", label: "Smart thermostat", icon: "thermometer", blurb: "Schedules that adapt to occupancy and weather." },
-      { key: "vent", label: "Ventilation", icon: "fan", blurb: "Link VOC/CO₂ to fans for silent, automatic air refresh." },
-      { key: "aq", label: "Air quality", icon: "droplets", blurb: "Track humidity and particulates to prevent stuffiness." },
-      { key: "energy", label: "Energy focus", icon: "gauge", blurb: "Keep comfort stable while trimming waste." },
+      { key: "ct-clamps", label: "CT clamps & meters", icon: "bolt", blurb: "Granular consumption by phase/circuit without rewiring." },
+      { key: "smart-plugs", label: "Smart plugs", icon: "plug", blurb: "Appliance-level tracking and remote cut-off for standbys." },
+      { key: "dashboards", label: "Actionable dashboards", icon: "bar-chart-3", blurb: "Daily/weekly KPIs, device ranks and anomaly flags." },
+      { key: "auto-savings", label: "Auto-savings rules", icon: "gauge", blurb: "Tie peak pricing to scenes: shed loads, pre-cool, shift tasks." },
     ],
   },
 
+  // DEVICE TAILORING
   {
-    slug: "security",
-    heading: "Security that’s discreet but ready",
+    slug: "device-tailoring",
+    heading: "Device Tailoring for your space",
     description:
-      "Smart locks, cameras and presence simulation; local logging and privacy-first defaults.",
-    image: "/images/placeholders/solution-security.jpg",
+      "We customize hardware, firmware and integrations so devices fit your rooms, habits and aesthetics.",
+    image: "/images/Raspi-Enclosure-1.webp",
     tech: [
-      { key: "cameras", label: "Smart cameras", icon: "camera", blurb: "Clear zones, privacy masks and timely clips." },
-      { key: "locks", label: "Smart locks", icon: "lock", blurb: "Per-person access, schedules and guest codes." },
-      { key: "alerts", label: "Quiet alerts", icon: "bell", blurb: "Notifications when they’re useful—not noisy." },
-      { key: "privacy", label: "Local control", icon: "shield", blurb: "Keep keys local; cloud is convenience, not a requirement." },
+      { key: "firmware-profiles", label: "Firmware profiles", icon: "code", blurb: "Fine-tuned behaviours, safe defaults and OTA updates." },
+      { key: "custom-enclosures", label: "Custom enclosures", icon: "package", blurb: "3D-printed or CNC housings that blend in and protect." },
+      { key: "sensor-kits", label: "Sensor kits", icon: "wrench", blurb: "Right mix of motion, lux, VOC/CO₂ and contact sensors per room." },
+      { key: "protocol-bridges", label: "Protocol bridges", icon: "bluetooth", blurb: "Bridge Zigbee/Thread, BLE, Modbus and IP gear into one brain." },
     ],
   },
 
+  // UTILITY E-SHOP INTEGRATION
   {
-    slug: "entertainment", // (Studio → Entertainment)
-    heading: "Entertainment that feels seamless",
+    slug: "utility-integration",
+    heading: "Utility E-Shop Integration end-to-end",
     description:
-      "Unified control for film, music and gaming—no more juggling inputs and modes.",
-    image: "/images/placeholders/solution-entertainment.jpg",
+      "From cart to commissioning: buy, provision and maintain devices in one flow—no guesswork.",
+    image: "/images/Smart-Home-Technology.jpg",
     tech: [
-      { key: "av", label: "AV switching", icon: "tv", blurb: "One remote/app to rule the inputs and scenes." },
-      { key: "audio", label: "Multi-room audio", icon: "music", blurb: "Group speakers, set zones and keep volumes sane." },
-      { key: "gaming", label: "Gaming modes", icon: "gamepad", blurb: "Low-latency presets with the right lights + sound." },
-      { key: "ambience", label: "Ambient scenes", icon: "sun", blurb: "Lights follow the mood—movie, music, focus, chill." },
-    ],
-  },
-
-  {
-    slug: "utility",
-    heading: "Let the house help with the chores",
-    description:
-      "Quiet automations for daily tasks—clean, brew, feed and remind without thinking about it.",
-    image: "/images/placeholders/solution-utility.jpg",
-    tech: [
-      { key: "cleaner", label: "Robot cleaner", icon: "bot", blurb: "Scheduled sweeps that avoid bowls and cables." },
-      { key: "coffee", label: "Coffee rituals", icon: "coffee", blurb: "Heat, brew and notify—right when you want it." },
-      { key: "pet", label: "Pet routines", icon: "dog", blurb: "Feeding and water health with gentle notifications." },
-      { key: "water", label: "Leak alerts", icon: "droplets", blurb: "Catch the drip early and shut off if needed." },
+      { key: "catalog-mapping", label: "Catalog mapping", icon: "shopping-cart", blurb: "Products map to rooms, scenes and compatible hubs automatically." },
+      { key: "auto-provision", label: "Auto-provisioning", icon: "cog", blurb: "Secure pairing, naming and room assignment right after checkout." },
+      { key: "payments-warranty", label: "Payments & warranty", icon: "credit-card", blurb: "Receipts, serials and coverage tied to each installed device." },
+      { key: "fulfillment", label: "Install & support", icon: "truck", blurb: "Scheduling, on-site setup and remote diagnostics in one place." },
     ],
   },
 ];
