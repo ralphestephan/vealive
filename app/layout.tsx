@@ -56,7 +56,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
         <Header />
         
-        <ScrollReveal />
+        
         <main className="mx-auto max-w-6xl px-4">{children}</main>
         <BackToTopFab insetClass="bottom-6 right-6 sm:bottom-8 sm:right-8" size={56} superAt={98} />
         <SiteFooter />
