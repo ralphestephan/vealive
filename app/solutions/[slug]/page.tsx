@@ -9,71 +9,54 @@ import type { Metadata } from "next";
 import { SITE } from "@/lib/site";
 import SEOJsonLd from "@/components/SEOJsonLd";
 import {
-  CheckCircle,
-  // base
-  Lightbulb, Thermometer, Droplets, Fan, Router, Cpu, Activity, Sprout, Plug,
+  CheckCircle, Lightbulb, Thermometer, Droplets, Fan, Router, Cpu, Activity, Sprout, Plug,
   Gauge, BarChart3, ShoppingCart, CreditCard, Cog, Truck, Package, Bluetooth,
-  Wrench, Code, Bolt,
-  // bulky icon set for “tech used”
-  Sun, Moon, Timer, Clock, Shield, ShieldCheck, ShieldAlert,
+  Wrench, Code, Bolt, Sun, Moon, Timer, Clock, Shield, ShieldCheck, ShieldAlert,
   Wifi, Antenna, Cable, Server, Database, HardDrive, Cloud, CloudCog,
   Tablet, Smartphone, QrCode, Barcode, Box, Boxes, BadgeCheck, ClipboardList,
-  Settings, SlidersHorizontal, Battery, BatteryCharging, Snowflake, Wind,
-  Home, KeyRound, MapPin, Globe, Rss, Usb, IdCard, Zap, LayoutGrid, Layers,
+  Settings, SlidersHorizontal, BatteryCharging, Snowflake, Wind,
+  Home, KeyRound, MapPin, Globe, Rss, Usb, IdCard, LayoutGrid, Layers,
   Camera, Lock
 } from "lucide-react";
+import Reveal from "@/components/ui/Reveal";
 
 type Props = { params: { slug: string } };
 
-// ---------- Canonical slugs (NEW) ----------
-type NewSlug =
-  | "home-automation"
-  | "device-tailoring"
-  | "energy-monitoring"
-  | "utility-integration";
-
-// Old → New alias map (backward compat)
+type NewSlug = "home-automation" | "device-tailoring" | "energy-monitoring" | "utility-integration";
 const SLUG_ALIASES: Record<string, NewSlug> = {
   lighting: "home-automation",
   security: "device-tailoring",
   climate: "energy-monitoring",
   utility: "utility-integration",
 };
-
-// Helper: resolve incoming slug to canonical new slug
 function resolveCanonicalSlug(input: string): NewSlug | null {
-  const newSlugs = new Set<NewSlug>([
-    "home-automation",
-    "device-tailoring",
-    "energy-monitoring",
-    "utility-integration",
-  ]);
-  if (newSlugs.has(input as NewSlug)) return input as NewSlug;
+  const set = new Set<NewSlug>(["home-automation", "device-tailoring", "energy-monitoring", "utility-integration"]);
+  if (set.has(input as NewSlug)) return input as NewSlug;
   return SLUG_ALIASES[input] ?? null;
 }
 
-// Prebuild static paths ONLY from what’s in data (supports either state)
 export function generateStaticParams() {
-  // If your data file already uses new slugs, these will be the new ones.
-  // If it still has old slugs, Next will statically build those too,
-  // but at runtime we’ll redirect to canonical.
   return solutions.map((s) => ({ slug: s.slug }));
 }
 
-// Metadata (canonicalized)
 export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
   const canonical = resolveCanonicalSlug(params.slug);
   const s = solutions.find((x) => x.slug === (canonical ?? params.slug));
   if (!s) return { title: "Solution" };
   return {
-    title: s.heading,
+    title: `${s.heading} | VeaLive360`,
     description: s.description,
     alternates: { canonical: `/solutions/${canonical ?? s.slug}` },
-    openGraph: { images: s.image ? [s.image] : undefined },
+    openGraph: {
+      title: s.heading,
+      description: s.description,
+      url: `${SITE.baseUrl}/solutions/${canonical ?? s.slug}`,
+      images: s.image ? [{ url: `${SITE.baseUrl}${s.image}` }] : undefined,
+    },
+    twitter: { card: "summary_large_image", site: "@vealive360" },
   };
 }
 
-// Badge labels
 const BADGE_BY_SLUG: Record<NewSlug, string> = {
   "home-automation": "Home Automation",
   "device-tailoring": "Device Tailoring",
@@ -81,12 +64,10 @@ const BADGE_BY_SLUG: Record<NewSlug, string> = {
   "utility-integration": "Utility E-Shop Integration",
 };
 
-// Massive “tech used” chip lists
 const TECH_BY_SLUG: Record<
   NewSlug,
   { label: string; Icon: React.ComponentType<{ className?: string }> }[]
 > = {
-  // HOME AUTOMATION
   "home-automation": [
     { label: "Automation engine", Icon: Cpu },
     { label: "Presence graph", Icon: Activity },
@@ -107,8 +88,6 @@ const TECH_BY_SLUG: Record<
     { label: "Camera monitoring", Icon: Camera },
     { label: "Door notifications", Icon: Lock },
   ],
-
-  // DEVICE TAILORING
   "device-tailoring": [
     { label: "Firmware profiles", Icon: Code },
     { label: "OTA updates", Icon: Rss },
@@ -127,8 +106,6 @@ const TECH_BY_SLUG: Record<
     { label: "Security keys", Icon: KeyRound },
     { label: "Acceptance testing", Icon: BadgeCheck },
   ],
-
-  // ENERGY MONITORING
   "energy-monitoring": [
     { label: "CT clamps / DIN meters", Icon: Bolt },
     { label: "Smart plugs (power)", Icon: Plug },
@@ -147,8 +124,6 @@ const TECH_BY_SLUG: Record<
     { label: "Cloud pipelines", Icon: CloudCog },
     { label: "Solar / battery", Icon: BatteryCharging },
   ],
-
-  // UTILITY E-SHOP INTEGRATION
   "utility-integration": [
     { label: "Catalog mapping", Icon: ShoppingCart },
     { label: "Compatibility matrix", Icon: Boxes },
@@ -169,7 +144,6 @@ const TECH_BY_SLUG: Record<
   ],
 };
 
-// Highlights & Expectations
 const HIGHLIGHTS_BY_SLUG: Record<NewSlug, string[]> = {
   "home-automation": [
     "Presence-aware scenes across rooms",
@@ -219,13 +193,8 @@ const EXPECT_BY_SLUG: Record<NewSlug, string[]> = {
 export default function Page({ params }: Props) {
   const canonical = resolveCanonicalSlug(params.slug);
   if (!canonical) return notFound();
+  if (canonical !== params.slug) redirect(`/solutions/${canonical}`);
 
-  // Redirect any old slug to the new canonical URL
-  if (canonical !== params.slug) {
-    redirect(`/solutions/${canonical}`);
-  }
-
-  // Find solution using canonical slug (works whether your data is already migrated or not)
   const s =
     solutions.find((x) => x.slug === canonical) ||
     solutions.find((x) => SLUG_ALIASES[x.slug as string] === canonical);
@@ -238,26 +207,23 @@ export default function Page({ params }: Props) {
   const badge = BADGE_BY_SLUG[canonical];
 
   return (
-    <div className="w-full overflow-x-clip">
+    <main className="w-full overflow-x-clip page-canvas">
       <SEOJsonLd
         data={{
           "@context": "https://schema.org",
           "@type": "Service",
           serviceType: s.heading,
           description: s.description,
-          provider: {
-            "@type": "Organization",
-            name: SITE.org.legalName,
-            url: SITE.baseUrl,
-          },
+          provider: { "@type": "Organization", name: SITE.org.legalName, url: SITE.baseUrl },
           areaServed: "LB",
         }}
       />
 
       {/* HERO */}
-      <section className="mt-10 mb-16">
+      <section id="solution-hero" className="mt-10 mb-16 relative section-wrap">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.06] via-white to-brand-green/[0.06]" />
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          <div className="space-y-6">
+          <Reveal className="space-y-6">
             <div>
               <Link
                 href="/solutions"
@@ -281,43 +247,40 @@ export default function Page({ params }: Props) {
             <p className="text-lg text-zinc-700 max-w-[640px]">{s.description}</p>
 
             <div className="flex gap-3 pt-1">
-              <Link
-                href="/contact"
-                className="px-5 py-3 rounded-full bg-brand-green text-white font-semibold"
-              >
+              <Link href="/contact" className="px-5 py-3 rounded-full bg-brand-green text-white font-semibold">
                 Book a Free Consultation
               </Link>
-              <Link
-                href="/solutions"
-                className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue"
-              >
+              <Link href="/solutions" className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue">
                 All Solutions
               </Link>
             </div>
-          </div>
+          </Reveal>
 
-          <div className="relative rounded-card overflow-hidden card ring-1 ring-brand-blue/10">
-            <div className="absolute inset-0 gradient-brand opacity-20 pointer-events-none" />
-            {s.image ? (
-              <Image
-                src={s.image}
-                alt={s.heading}
-                width={1200}
-                height={900}
-                className="w-full h-auto object-cover"
-                priority
-              />
-            ) : (
-              <div className="aspect-[4/3] w-full bg-zinc-100" />
-            )}
-          </div>
+          <Reveal>
+            <div className="relative rounded-card overflow-hidden ring-1 ring-brand-blue/10 w-full max-w-[560px] h-[340px] sm:h-[420px] md:justify-self-end">
+              <div className="absolute inset-0 gradient-brand opacity-15 pointer-events-none" />
+              {s.image ? (
+                <Image
+                  src={s.image}
+                  alt={s.heading}
+                  fill
+                  className="object-cover"
+                  sizes="(min-width:1024px) 560px, 90vw"
+                  priority
+                />
+              ) : (
+                <div className="h-full w-full bg-zinc-100" />
+              )}
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      {/* Technologies we use */}
+      {/* TECH STACK */}
       <section className="mb-10">
         <div className="mx-auto max-w-6xl px-4">
-          <div className="rounded-card bg-white border border-zinc-100 shadow-soft p-6">
+          <Reveal as="div" className="rounded-card bg-white border border-zinc-100 shadow-soft p-6 section-wrap">
+            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.04] via-white to-brand-green/[0.04]" />
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
@@ -344,7 +307,7 @@ export default function Page({ params }: Props) {
                 ))}
               </div>
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
@@ -352,8 +315,9 @@ export default function Page({ params }: Props) {
       <section className="pb-6">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
           {highlights.map((item, i) => (
-            <article
+            <Reveal
               key={i}
+              as="article"
               className="p-6 rounded-card shadow-soft bg-white border border-zinc-100 hover:shadow-lg transition-shadow"
             >
               <div className="flex items-center gap-2 mb-2 text-brand-blue">
@@ -363,30 +327,30 @@ export default function Page({ params }: Props) {
               <p className="text-sm text-zinc-600">
                 Tailored to your routines with VeaLive’s curated devices and flows.
               </p>
-            </article>
+            </Reveal>
           ))}
         </div>
       </section>
 
       {/* DETAILS */}
-      <section className="py-12 relative">
-        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+      <section className="py-12 relative section-wrap">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.05] via-white to-brand-green/[0.05]" />
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow">
+          <Reveal as="div" className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-zinc-100 text-xs font-medium">
               What you can expect
             </span>
             <ul className="mt-4 space-y-2 text-zinc-700">
-              {EXPECT_BY_SLUG[canonical].map((t) => (
+              {expect.map((t) => (
                 <li key={t} className="flex items-start gap-2">
                   <CheckCircle className="h-5 w-5 text-brand-blue shrink-0 mt-0.5" />
                   <span>{t}</span>
                 </li>
               ))}
             </ul>
-          </div>
+          </Reveal>
 
-          <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow">
+          <Reveal as="div" className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-zinc-100 text-xs font-medium">
               Getting started
             </span>
@@ -404,27 +368,21 @@ export default function Page({ params }: Props) {
                 Start your plan
               </Link>
               {canonical === "utility-integration" ? (
-                <Link
-                  href="/ecommerce"
-                  className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue"
-                >
+                <Link href="/ecommerce" className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue">
                   Shop compatible devices
                 </Link>
               ) : (
-                <Link
-                  href="/solutions"
-                  className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue"
-                >
+                <Link href="/solutions" className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue">
                   Explore other solutions
                 </Link>
               )}
             </div>
-          </div>
+          </Reveal>
         </div>
       </section>
 
       <CTA />
       <TrustSignals />
-    </div>
+    </main>
   );
 }

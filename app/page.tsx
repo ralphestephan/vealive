@@ -1,39 +1,49 @@
-import Hero from "@/components/Hero";
-import SolutionsGrid from "@/components/SolutionsGrid";
+// app/page.tsx
+import type { Metadata } from "next";
 import Link from "next/link";
+import { SITE } from "@/lib/site";
+
+import SEOJsonLd from "@/components/SEOJsonLd";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
+import Reveal from "@/components/ui/Reveal";
+
+import Hero from "@/components/Hero";
+import Services from "@/components/Services";
+import SolutionsGrid from "@/components/SolutionsGrid";
 import Process from "@/components/Process";
+import SmartDomePromo from "@/components/SmartDomePromo";
 import Ecosystem from "@/components/Ecosystem";
 import Reviews from "@/components/Reviews";
 import Brands from "@/components/Brands";
 import BlogTeasers from "@/components/BlogTeasers";
 import CTA from "@/components/CTA";
 import TrustSignals from "@/components/TrustSignals";
-import Services from "@/components/Services";
-import  SmartDomePromo from "@/components/SmartDomePromo";
-import { SITE } from "@/lib/site";
-import SEOJsonLd from "@/components/SEOJsonLd";
 
-import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "VeaLive360 | Smart Home Automation in Beirut",
   description:
-    "VeaLive designs presence-aware, privacy-first smart home solutions in Beirut. Open-ecosystem integrations and DIY innovation to bring your home to life.",
+    "Smart home automation in Beirut and across Lebanon. Presence-aware, privacy-first systems—lighting, climate, security, entertainment, energy, and Smart Dome—integrated with Apple Home, Google, Alexa & open ecosystems.",
   alternates: { canonical: "/" },
   openGraph: {
-    title: "VeaLive360 HomePage",
+    title: "VeaLive360 — Smart Home Automation in Beirut",
     description:
-      "You dream it—we make it. Presence-aware smart living that’s private, open-ecosystem, and locally supported. Explore our 360° approach and Smart Dome concept.",
-    url: `${SITE.baseUrl}/about`,
+      "Presence-aware smart living that’s private, open-ecosystem, and locally supported. Explore our solutions, process, and Smart Dome concept.",
+    url: `${SITE.baseUrl}/`,
     images: [{ url: SITE.ogImage }],
   },
   twitter: { card: "summary_large_image", site: "@vealive360" },
+  other: {
+    keywords:
+      "smart home Beirut, home automation Lebanon, Apple Home, Google Home, Alexa, Matter, Thread, Zigbee, smart lighting, smart security, smart climate, Smart Dome, VeaLive360",
+  },
 };
 
 export default function Page() {
-return (
-<div className="py-8">
-    <SEOJsonLd
-          data={{
+  return (
+    <main className="w-full overflow-x-clip page-canvas">
+      <SEOJsonLd
+        data={[
+          {
             "@context": "https://schema.org",
             "@type": "Organization",
             name: SITE.org.legalName,
@@ -49,52 +59,79 @@ return (
                 availableLanguage: ["en", "ar", "fr"],
               },
             ],
-          }}
-        />
-<Hero />
-<Services />
-<div className="relative mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-  {/* soft glow accents */}
-  <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-brand-blue/10 blur-3xl" />
-  <div className="pointer-events-none absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-brand-green/10 blur-3xl" />
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "VeaLive360",
+            url: SITE.baseUrl,
+          },
+        ]}
+      />
 
-  <div>
-    <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-      Curated picks
-    </span>
-    <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
-      <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
-        Popular Solutions
-      </span>
-    </h2>
-    <p className="mt-2 text-zinc-600">
-      Our most requested setups across lighting, climate, and security.
-    </p>
-    {/* gradient underline */}
-    <span className="mt-3 block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
-  </div>
+      {/* HERO has its own spacing; keep it on the canvas */}
+      <Hero />
 
-  <Link
-    href="/solutions"
-    className="inline-flex items-center gap-2 self-start sm:self-auto rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold hover:border-brand-blue"
-  >
-    See all <span aria-hidden>→</span>
-  </Link>
-</div>
+      {/* SERVICES */}
+      <Reveal>
+        <div className="mx-auto max-w-6xl px-4">
+          <Services />
+        </div>
+      </Reveal>
 
-<SolutionsGrid />
-<Process />
-<SmartDomePromo />
+      {/* POPULAR SOLUTIONS */}
+      <Reveal>
+        <section className="py-6">
+          <div className="mx-auto max-w-6xl px-4">
+            <div className="relative mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+              <div>
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+                  Curated picks
+                </span>
+                <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
+                  <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+                    Popular Solutions
+                  </span>
+                </h2>
+                <div className="mt-2">
+                  <DynamicUnderline
+                    watch=".solutions-anchor"
+                    align="left"
+                    widthClass="w-20"
+                    height={4}
+                  />
+                </div>
+                <p className="mt-2 text-zinc-600 max-w-[60ch] solutions-anchor">
+                  Our most requested setups across lighting, climate, and security.
+                </p>
+              </div>
 
-<Ecosystem />
-<Reviews />
-<Brands />
-<BlogTeasers />
-<CTA />
-<TrustSignals />
+              <Link
+                href="/solutions"
+                className="btn inline-flex items-center gap-2 self-start sm:self-auto rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold
+                           hover:border-brand-blue hover:shadow-sm btn btn-outline"
+              >
+                See all <span aria-hidden>→</span>
+              </Link>
+            </div>
 
-</div>
+            <SolutionsGrid />
+          </div>
+        </section>
+      </Reveal>
 
+      {/* These components already include vertical rhythm; we keep containers but no extra backdrops */}
+      <Reveal><div className="mx-auto max-w-6xl px-4"><Process /></div></Reveal>
+      <Reveal><div className="mx-auto max-w-6xl px-4"><SmartDomePromo /></div></Reveal>
+      <Reveal><div className="mx-auto max-w-6xl px-4"><Ecosystem /></div></Reveal>
 
-);
+      {/* Reviews with plain background + silver press so it blends with canvas */}
+      <Reveal><div className="mx-auto max-w-6xl px-4"><Reviews plain silverPress /></div></Reveal>
+
+      <Reveal><div className="mx-auto max-w-6xl px-4"><Brands /></div></Reveal>
+      <Reveal><div className="mx-auto max-w-6xl px-4"><BlogTeasers /></div></Reveal>
+      <Reveal><CTA /></Reveal>
+      <Reveal><TrustSignals /></Reveal>
+    </main>
+  );
 }

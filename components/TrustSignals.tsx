@@ -11,22 +11,37 @@ export default function TrustSignals() {
 
   return (
     <section className="pt-16">
-      <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 place-items-center">
-        {items.map(({ title, body, icon: Icon }, i) => {
-          const isblack = i % 2 === 0;
-          const chip =
-            isblack ? "bg-brand-black/10 text-brand-black" : "bg-brand-black/10 text-brand-black";
+      {/* Mobile: horizontal scroll, Desktop: 4-col grid */}
+      <div className="
+        md:hidden -mx-4 px-4 flex gap-4 overflow-x-auto snap-x snap-mandatory no-scrollbar
+      ">
+        {items.map(({ title, body, icon: Icon }) => (
+          <article
+            key={title}
+            className="min-w-[260px] snap-start p-5 rounded-card bg-white border border-zinc-100 shadow-soft flex flex-col items-start"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-brand-green/10 text-brand-green inline-grid place-items-center mb-2">
+              <Icon className="w-6 h-6" />
+            </div>
+            <h3 className="text-base font-semibold">{title}</h3>
+            <p className="text-zinc-600 mt-1">{body}</p>
+          </article>
+        ))}
+      </div>
 
-        return (
-          <article key={title} className="p-6 text-center flex flex-col items-center">
-            <div className={`w-12 h-12 rounded-xl ${chip} flex items-center justify-center mb-3`}>
-              <Icon className="w-6 h-6" aria-hidden />
+      <div className="hidden md:grid mx-auto max-w-6xl px-4 grid-cols-4 gap-6 items-stretch">
+        {items.map(({ title, body, icon: Icon }) => (
+          <article
+            key={title}
+            className="h-full p-6 text-center flex flex-col items-center"
+          >
+            <div className="w-14 h-14 rounded-2xl  flex items-center justify-center mb-3">
+              <Icon className="w-7 h-7" />
             </div>
             <h3 className="text-lg font-semibold">{title}</h3>
-            <p className="text-zinc-600 mt-1 max-w-[28ch]">{body}</p>
+            <p className="text-zinc-600 mt-1 max-w-[32ch]">{body}</p>
           </article>
-        );
-        })}
+        ))}
       </div>
     </section>
   );

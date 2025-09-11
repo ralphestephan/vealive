@@ -11,22 +11,42 @@ import CTA from "@/components/CTA";
 import TrustSignals from "@/components/TrustSignals";
 import SEOJsonLd from "@/components/SEOJsonLd";
 import { SITE } from "@/lib/site";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
 
+/* ---------------------------
+   SEO
+--------------------------- */
 export const metadata: Metadata = {
   title: "VeaLive FAQs | Smart Home Automation in Beirut",
   description:
-    "Answers to common questions about VeaLive smart home automation: compatibility, installation, privacy, security, support, and maintenance.",
+    "Answers to common questions about VeaLive smart home automation in Beirut: compatibility, installation, privacy, security, support, and maintenance.",
   alternates: { canonical: "/faqs" },
   openGraph: {
     title: "VeaLive FAQs",
     description:
-      "Everything you need to know about VeaLive smart home solutions—compatibility, install, privacy, and support.",
+      "Everything you need to know about VeaLive smart home solutions—compatibility, installation, privacy, and support.",
     url: `${SITE.baseUrl}/faqs`,
     images: [{ url: SITE.ogImage }],
   },
   twitter: { card: "summary_large_image", site: "@vealive360" },
+  robots: { index: true, follow: true },
 };
 
+/* ---------------------------
+   Utils
+--------------------------- */
+function slugifySafe(input: string) {
+  return input
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9\-_]/g, "");
+}
+
+/* ---------------------------
+   Data
+--------------------------- */
 const faqCategories = [
   {
     category: "General",
@@ -130,28 +150,41 @@ const faqCategories = [
   },
 ];
 
+/* ---------------------------
+   Page
+--------------------------- */
 export default function FAQPage() {
   return (
-    <div id="top" className="w-full overflow-x-clip">
-      {/* JSON-LD: FAQPage */}
+    <div id="top" data-no-reveal className="w-full overflow-x-clip page-canvas">
+      {/* JSON-LD: FAQPage + Breadcrumbs */}
       <SEOJsonLd
-        data={{
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: faqCategories.flatMap((cat) =>
-            cat.questions.map((q) => ({
-              "@type": "Question",
-              name: q.question,
-              acceptedAnswer: { "@type": "Answer", text: q.answer },
-            }))
-          ),
-        }}
+        data={[
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqCategories.flatMap((cat) =>
+              cat.questions.map((q) => ({
+                "@type": "Question",
+                name: q.question,
+                acceptedAnswer: { "@type": "Answer", text: q.answer },
+              }))
+            ),
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Home", item: SITE.baseUrl },
+              { "@type": "ListItem", position: 2, name: "FAQs", item: `${SITE.baseUrl}/faqs` },
+            ],
+          },
+        ]}
       />
 
       {/* HERO */}
-      <section className="mt-10 mb-12 relative">
+      <section id="faq-hero" className="mt-10 mb-12 relative section-wrap">
         <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
-        <div className="mx-auto max-w-6xl px-4 text-center">
+        <div className="mx-auto max-w-6xl px-4 text-center ">
           <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
             FAQ
           </span>
@@ -161,10 +194,15 @@ export default function FAQPage() {
               Questions
             </span>
           </h1>
+
+          {/* Dynamic underline (centered) */}
+          <div className="mt-3">
+            <DynamicUnderline watch="#faq-hero" align="center" widthClass="w-20" height={4} />
+          </div>
+
           <p className="mt-3 text-lg text-zinc-700 max-w-[700px] mx-auto">
             Clear answers about VeaLive smart home automation—compatibility, setup, security, and support.
           </p>
-          <span className="mt-4 mx-auto block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
         </div>
       </section>
 
@@ -172,19 +210,23 @@ export default function FAQPage() {
       <section className="py-12">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
-          <aside className="space-y-6 lg:sticky lg:top-20 h-fit">
-            <div>
-              <h2 className="text-xl font-semibold">Categories</h2>
+          <aside className="space-y-6 lg:sticky lg:top-20 h-fit ">
+            <div className="p-4 rounded-card bg-white border border-zinc-100 shadow-soft">
+              <h2 className="text-base font-semibold text-zinc-900">Categories</h2>
+              <span className="mt-1 block h-0.5 w-10 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
               <nav className="mt-3 space-y-1">
-                {faqCategories.map((category) => (
-                  <Link
-                    key={category.category}
-                    href={`#${category.category.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="block py-2 px-3 rounded-md hover:bg-zinc-100 transition-colors"
-                  >
-                    {category.category}
-                  </Link>
-                ))}
+                {faqCategories.map((category) => {
+                  const slug = slugifySafe(category.category);
+                  return (
+                    <Link
+                      key={category.category}
+                      href={`#${slug}`}
+                      className="block py-2 px-3 rounded-md hover:bg-zinc-100 transition-colors"
+                    >
+                      {category.category}
+                    </Link>
+                  );
+                })}
               </nav>
             </div>
 
@@ -193,57 +235,76 @@ export default function FAQPage() {
               <p className="text-sm text-zinc-600 mb-4">
                 If you couldn’t find the answer, our team is here to help.
               </p>
-              <Link
-                href="/contact"
-                className="w-full inline-flex items-center justify-center px-4 h-10 rounded-full bg-brand-blue text-white font-semibold"
-              >
+              <Link href="/contact" className="btn-primary w-full h-10">
                 Contact support
               </Link>
             </div>
+
+            <Link href="#top" className="btn-outline w-full h-10 text-center">
+              Back to top
+            </Link>
           </aside>
 
           {/* Content */}
           <div className="lg:col-span-3 space-y-8">
-            {faqCategories.map((category, categoryIndex) => (
-              <section
-                key={category.category}
-                id={category.category.toLowerCase().replace(/\s+/g, "-")}
-                className="scroll-mt-24 p-6 md:p-8 rounded-card bg-white border border-zinc-100 shadow-soft"
-              >
-                <h2 className="text-2xl font-bold mb-4">{category.category}</h2>
-                <Accordion type="single" collapsible className="w-full divide-y divide-zinc-100">
-                  {category.questions.map((faq, faqIndex) => (
-                    <AccordionItem
-                      key={faqIndex}
-                      value={`${categoryIndex}-${faqIndex}`}
-                      className="border-none"
-                    >
-                      <AccordionTrigger className="text-left font-medium py-4">
-                        {faq.question}
-                      </AccordionTrigger>
-                      <AccordionContent className="text-zinc-600 pb-4">
-                        {faq.answer}
-                      </AccordionContent>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-                <div className="mt-4">
-                  <a
-                    href="#top"
-                    className="text-sm font-semibold text-brand-blue hover:underline"
+            {faqCategories.map((category) => {
+              const slug = slugifySafe(category.category);
+              return (
+                <section
+                  key={category.category}
+                  id={slug}
+                  className="scroll-mt-24 p-6 md:p-8 rounded-card bg-white border border-zinc-100 shadow-soft "
+                >
+                  <h2 className="text-2xl font-bold text-zinc-900">{category.category}</h2>
+
+                  {/* Dynamic underline (left) */}
+                  <div className="mt-2">
+                    <DynamicUnderline watch={`#${slug}`} align="left" widthClass="w-20" height={4} />
+                  </div>
+
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="mt-4 w-full divide-y divide-zinc-100"
                   >
-                    Back to top ↑
-                  </a>
-                </div>
-              </section>
-            ))}
+                    {category.questions.map((faq, idx) => (
+                      <AccordionItem key={idx} value={`${slug}-${idx}`} className="border-none group">
+                        <AccordionTrigger
+                          className="
+                            text-left font-medium py-4 transition-colors
+                            hover:text-zinc-900
+                            data-[state=open]:text-brand-blue
+                          "
+                        >
+                          {faq.question}
+                        </AccordionTrigger>
+
+                        <AccordionContent
+                          className="
+                            text-zinc-700 pb-4 overflow-hidden
+                            data-[state=open]:animate-accordion-down
+                            data-[state=closed]:animate-accordion-up
+                          "
+                        >
+                          {faq.answer}
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </section>
+              );
+            })}
           </div>
         </div>
       </section>
 
-      {/* Closing rhythm */}
+      {/* CTA + Trust */}
       <CTA />
       <TrustSignals />
+
+      {/* simple progressive reveal (no JS component needed) */}
+
+
     </div>
   );
 }

@@ -60,7 +60,7 @@ const solutions: Solution[] = [
     heading: "Energy Monitoring you can act on",
     description:
       "Live and historical usage per circuit, appliance and room—with alerts and automations to cut waste.",
-    image: "/images/energy.jpg",
+    image: "/images/homeenergydashboard.png",
     tech: [
       { key: "ct-clamps", label: "CT clamps & meters", icon: "bolt", blurb: "Granular consumption by phase/circuit without rewiring." },
       { key: "smart-plugs", label: "Smart plugs", icon: "plug", blurb: "Appliance-level tracking and remote cut-off for standbys." },

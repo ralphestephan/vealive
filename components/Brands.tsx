@@ -1,5 +1,5 @@
-// components/Brands.tsx
 import Image from "next/image";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
 
 export default function Brands() {
   const items = [
@@ -12,9 +12,17 @@ export default function Brands() {
   ];
 
   return (
-    <section className="py-16 relative">
-      {/* soft background wash */}
-      <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+    <section id="brands" className="py-16 relative">
+      {/* soft background wash with faded edges */}
+      <div
+        className="absolute inset-0 -z-10 gradient-multi opacity-5"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.9) 10%, rgba(0,0,0,.9) 90%, rgba(0,0,0,0) 100%)",
+          maskImage:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.9) 10%, rgba(0,0,0,.9) 90%, rgba(0,0,0,0) 100%)",
+        }}
+      />
 
       <div className="mx-auto max-w-6xl px-4">
         {/* Enhanced title */}
@@ -30,10 +38,12 @@ export default function Brands() {
               Brands we integrate
             </span>
           </h2>
+          <div className="mt-3">
+            <DynamicUnderline watch="#brands" align="left" widthClass="w-20" height={4} />
+          </div>
           <p className="mt-2 text-zinc-600 relative">
             Trusted devices that play nicely with lighting, climate, and security scenes.
           </p>
-          <span className="mt-3 block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green relative" />
         </div>
 
         {/* Logos */}
@@ -43,7 +53,6 @@ export default function Brands() {
               key={i.name}
               className="group p-4 rounded-card bg-white border border-zinc-200 flex items-center justify-center shadow-soft hover:shadow-lg transition"
             >
-              {/* Fixed-size box so all logos render uniformly */}
               <div className="relative w-full h-12 md:h-14 grayscale opacity-80 group-hover:opacity-100 group-hover:grayscale-0 transition">
                 <Image
                   src={i.src}

@@ -1,10 +1,10 @@
-// components/BlogTeasers.tsx
 "use client";
 
 import Image from "next/image";
 import Link from "next/link";
 import { Leaf, PawPrint, Sun } from "lucide-react";
 import { insights } from "@/data/insights";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
 
 function FallbackArt({ which }: { which: "garden" | "pet" | "summer" }) {
   const map = {
@@ -21,15 +21,22 @@ function FallbackArt({ which }: { which: "garden" | "pet" | "summer" }) {
 }
 
 export default function BlogTeasers() {
-  // Take the latest 3 insights (by date desc)
   const latest = [...insights]
     .sort((a, b) => +new Date(b.date) - +new Date(a.date))
     .slice(0, 3);
 
   return (
-    <section className="py-16 relative">
-      {/* soft background wash */}
-      <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+    <section id="blog-teasers" className="py-16 relative">
+      {/* soft background wash with faded edges */}
+      <div
+        className="absolute inset-0 -z-10 gradient-multi opacity-5"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.9) 10%, rgba(0,0,0,.9) 90%, rgba(0,0,0,0) 100%)",
+          maskImage:
+            "linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.9) 10%, rgba(0,0,0,.9) 90%, rgba(0,0,0,0) 100%)",
+        }}
+      />
 
       <div className="mx-auto max-w-6xl px-4">
         {/* Title row with "See all" */}
@@ -43,19 +50,20 @@ export default function BlogTeasers() {
                 Intelligent living
               </span>
             </h2>
+            <div className="mt-3">
+              <DynamicUnderline watch="#blog-teasers" align="left" widthClass="w-20" height={4} />
+            </div>
             <p className="mt-2 text-zinc-600">
               Fresh thinking from the VeaLive team—quick reads with real takeaways.
             </p>
-            <span className="mt-3 block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
           </div>
 
           <Link
             href="/insights"
-            className="shrink-0 inline-flex items-center gap-2 rounded-full border border-zinc-200 px-4 py-2 text-sm font-semibold hover:bg-zinc-50 transition"
+            className="shrink-0 inline-flex items-center gap-2 rounded-full btn btn-outline border border-zinc-200 px-4 py-2 text-sm font-semibold hover:bg-zinc-50 transition"
             aria-label="See all insights"
           >
-            See all
-            <span aria-hidden>→</span>
+            See all <span aria-hidden>→</span>
           </Link>
         </div>
 
@@ -108,8 +116,7 @@ export default function BlogTeasers() {
                       className="inline-flex items-center gap-1 rounded-full bg-zinc-100 hover:bg-zinc-200 px-3 py-1.5 font-semibold text-brand-blue transition"
                       aria-label={`Read ${p.title}`}
                     >
-                      Read
-                      <span aria-hidden>→</span>
+                      Read <span aria-hidden>→</span>
                     </Link>
                   </div>
                 </div>

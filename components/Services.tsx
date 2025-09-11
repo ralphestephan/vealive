@@ -1,8 +1,10 @@
 // components/Services.tsx
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Home, PlugZap, ShieldHalf, ShoppingBag } from "lucide-react";
 import Link from "next/link";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
 
 const services = [
   {
@@ -40,39 +42,89 @@ const services = [
 ];
 
 export default function Services() {
-  return (
-    <section className="py-16 relative">
-      {/* soft BG wash */}
-    <div className="relative mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        {/* soft corner glow */}
-        <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-brand-blue/10 blur-3xl" />
-        <div className="pointer-events-none absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-brand-green/10 blur-3xl" />
+  const wrapRef = useRef<HTMLElement | null>(null);
 
-        <div>
+  // simple reveal-on-scroll for the grid
+  useEffect(() => {
+    const root = wrapRef.current;
+    if (!root) return;
+
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches;
+
+    const cards = Array.from(root.querySelectorAll<HTMLElement>("[data-svc-card]"));
+    if (prefersReduced) {
+      cards.forEach((c) => c.classList.add("reveal-in"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add("reveal-in");
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    cards.forEach((c) => {
+      c.classList.add("reveal-base");
+      io.observe(c);
+    });
+
+    return () => io.disconnect();
+  }, []);
+
+  return (
+    <section ref={wrapRef} className="py-16 relative">
+      {/* contained soft wash that fades at edges */}
+      <div
+        className="absolute inset-0 -z-10 bg-gradient-to-b from-brand-blue/[0.06] via-brand-green/[0.06] to-transparent"
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+        }}
+      />
+
+      <div className="mx-auto max-w-6xl px-4">
+        {/* Section header */}
+        <div className="relative mb-10 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+          {/* subtle corner glows (contained by section) */}
+          <div className="pointer-events-none absolute -top-10 -left-10 w-40 h-40 rounded-full bg-brand-blue/10 blur-3xl" />
+          <div className="pointer-events-none absolute -bottom-10 -right-10 w-40 h-40 rounded-full bg-brand-green/10 blur-3xl" />
+
+          <div className="services-title">
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-            What we do
+              What we do
             </span>
             <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
-            <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
-               Our Services
-            </span>
+              <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+                Our Services
+              </span>
             </h2>
-            <p className="mt-2 text-zinc-600">
-            Tailored automation for comfort, security, and energy — built around your routine.
+            <p className="mt-2 text-zinc-600 max-w-[60ch]">
+              Tailored automation for comfort, security, and energy—built around your routine.
             </p>
-            {/* accent underline */}
-            <span className="mt-3 block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
+            {/* animated gradient underline */}
+            <div className="mt-3">
+              <DynamicUnderline watch=".services-title" align="left" widthClass="w-20" height={4} />
+            </div>
+          </div>
+
+          <Link href="/solutions" className="btn btn-outline">
+            See all <span aria-hidden>→</span>
+          </Link>
         </div>
 
-        <Link
-            href="/solutions"
-            className="inline-flex items-center gap-2 self-start sm:self-auto rounded-full border border-zinc-300 px-4 py-2 text-sm font-semibold hover:border-brand-blue"
-        >
-            See all <span aria-hidden>→</span>
-        </Link>
-        </div>
+        {/* Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {services.map(({ title, body, icon: Icon, href, tint }) => {
+          {services.map(({ title, body, icon: Icon, href, tint }, i) => {
             const chip =
               tint === "green"
                 ? "bg-brand-green/10 text-brand-green"
@@ -85,10 +137,14 @@ export default function Services() {
             return (
               <article
                 key={title}
-                className="group relative h-full flex flex-col p-6 rounded-card shadow-soft bg-white border border-zinc-100 hover:shadow-lg transition-shadow"
+                data-svc-card
+                style={{ transitionDelay: `${i * 60}ms` }}
+                className="group relative h-full flex flex-col p-6 rounded-card bg-white border border-zinc-100 shadow-soft card-hover"
               >
                 {/* subtle corner glow */}
-                <div className={`pointer-events-none absolute -top-10 -right-10 w-28 h-28 rounded-full ${glow} blur-2xl`} />
+                <div
+                  className={`pointer-events-none absolute -top-10 -right-10 w-28 h-28 rounded-full ${glow} blur-2xl`}
+                />
 
                 <div className={`w-12 h-12 rounded-xl ${chip} flex items-center justify-center mb-4`}>
                   <Icon className="w-6 h-6" aria-hidden />
@@ -96,29 +152,19 @@ export default function Services() {
 
                 <h3 className="text-xl font-bold">{title}</h3>
 
-                {/* clamp to keep heights equal */}
-                <p className="mt-2 text-zinc-600 leading-6 line-clamp-4">
-                  {body}
-                </p>
+                {/* clamp to keep card heights aligned */}
+                <p className="mt-2 text-zinc-600 leading-6 line-clamp-4">{body}</p>
 
-                {/* CTA pinned to bottom */}
-                <Link
-                  href={href}
-                  className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand-blue"
-                >
+                {/* CTA pinned to bottom w/ consistent motion */}
+                <Link href={href} className="mt-auto inline-flex items-center gap-2 text-sm font-semibold text-brand-blue">
                   Explore
-                  <span
-                    aria-hidden
-                    className="transition-transform group-hover:translate-x-0.5"
-                  >
-                    →
-                  </span>
+                  <span aria-hidden className="transition-transform group-hover:translate-x-0.5">→</span>
                 </Link>
               </article>
             );
           })}
         </div>
-    
+      </div>
     </section>
   );
 }

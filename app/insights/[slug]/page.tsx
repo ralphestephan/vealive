@@ -6,6 +6,8 @@ import { notFound } from "next/navigation";
 import { insights } from "@/data/insights";
 import SEOJsonLd from "@/components/SEOJsonLd";
 import { SITE } from "@/lib/site";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
+import Reveal from "@/components/ui/Reveal";
 
 type Props = { params: { slug: string } };
 
@@ -34,13 +36,12 @@ export default function Page({ params }: Props) {
   const post = insights.find((p) => p.slug === params.slug);
   if (!post) return notFound();
 
-  // Related: same first tag, exclude self
   const related = insights
     .filter((p) => p.slug !== post.slug && p.tags[0] === post.tags[0])
     .slice(0, 3);
 
   return (
-    <main className="w-full overflow-x-clip">
+    <main className="w-full overflow-x-clip page-canvas">
       {/* JSON-LD (BlogPosting) */}
       <SEOJsonLd
         data={{
@@ -61,8 +62,8 @@ export default function Page({ params }: Props) {
       />
 
       {/* HERO */}
-      <section className="mt-10 mb-8 relative">
-        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+      <section className="mt-10 mb-8 relative section-wrap">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.06] via-white to-brand-green/[0.06]" />
         <div className="mx-auto max-w-6xl px-4">
           <Link
             href="/insights"
@@ -74,36 +75,46 @@ export default function Page({ params }: Props) {
           <div className="mt-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Title + meta */}
             <header className="lg:col-span-7">
-              <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight">
-                <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
-                  {post.title}
-                </span>
-              </h1>
-             
-              <p className="mt-4 text-lg leading-7 text-zinc-700">
-                {("intro" in post && (post as any).intro) ? (post as any).intro : post.excerpt}
-              </p>
-
-              <div className="mt-3 text-sm text-zinc-600 flex flex-wrap items-center gap-2">
-                <time dateTime={post.date}>
-                  {new Date(post.date).toLocaleDateString()}
-                </time>
-                • <span>{post.readMins} min read</span>
-                • {post.tags.map((t) => (
-                  <span key={t} className="px-2 py-0.5 rounded-full bg-zinc-100 text-xs font-medium">
-                    {t}
+              <Reveal>
+                <h1 className="text-3xl md:text-4xl font-extrabold leading-tight tracking-tight">
+                  <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+                    {post.title}
                   </span>
-                ))}
-              </div>
+                </h1>
+                <div className="mt-2">
+                  <DynamicUnderline watch="h1" align="left" widthClass="w-24" height={4} />
+                </div>
+
+                <p className="mt-4 text-lg leading-7 text-zinc-700">
+                  {"intro" in post && (post as any).intro
+                    ? (post as any).intro
+                    : post.excerpt}
+                </p>
+
+                <div className="mt-3 text-sm text-zinc-600 flex flex-wrap items-center gap-2">
+                  <time dateTime={post.date}>
+                    {new Date(post.date).toLocaleDateString()}
+                  </time>
+                  • <span>{post.readMins} min read</span>
+                  • {post.tags.map((t) => (
+                    <span
+                      key={t}
+                      className="px-2 py-0.5 rounded-full bg-zinc-100 text-xs font-medium"
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              </Reveal>
             </header>
 
             {/* Cover */}
-            <div className="lg:col-span-5">
+            <Reveal className="lg:col-span-5">
               <div className="relative aspect-[16/10] rounded-card overflow-hidden border border-zinc-100 shadow-soft">
                 <Image src={post.cover} alt={post.coverAlt} fill className="object-cover" />
                 <div className="absolute inset-0 gradient-brand opacity-15" />
               </div>
-            </div>
+            </Reveal>
           </div>
         </div>
       </section>
@@ -111,34 +122,39 @@ export default function Page({ params }: Props) {
       {/* BODY + TOC */}
       <section className="pb-16">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Article */}
-          <article className="lg:col-span-8 prose prose-zinc max-w-none">
+          {/* Article (darker body) */}
+          <article className="lg:col-span-8 prose max-w-none text-zinc-800">
             {post.sections.map((s) => (
               <section key={s.id} id={s.id} className="scroll-mt-24">
-                <h2>{s.heading}</h2>
+                <h2 className="text-zinc-900">{s.heading}</h2>
+
                 {s.paras.map((p, i) => (
-                  <p key={i}>{p}</p>
+                  <p key={i} className="text-zinc-800">
+                    {p}
+                  </p>
                 ))}
+
                 {s.bullets && (
-                  <ul>
+                  <ul className="[&_li]:text-zinc-800">
                     {s.bullets.map((b, i) => (
                       <li key={i}>{b}</li>
                     ))}
                   </ul>
                 )}
+
                 {s.note && (
-                  <div className="rounded-xl p-4 bg-brand-blue/5 border border-brand-blue/10 text-sm">
-                    <strong>Note:</strong> {s.note}
+                  <div className="rounded-xl p-4 bg-brand-blue/5 border border-brand-blue/10 text-sm text-zinc-800">
+                    <strong className="text-zinc-900">Note:</strong> {s.note}
                   </div>
                 )}
               </section>
             ))}
           </article>
 
-          {/* TOC + meta card */}
+          {/* TOC + meta + FAQ + related */}
           <aside className="lg:col-span-4 space-y-6 h-fit lg:sticky lg:top-20">
             <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
-              <div className="text-sm font-semibold text-zinc-700">On this page</div>
+              <div className="text-sm font-semibold text-zinc-800">On this page</div>
               <nav className="mt-2 space-y-2">
                 {post.sections.map((s) => (
                   <a
@@ -149,28 +165,31 @@ export default function Page({ params }: Props) {
                     {s.heading}
                   </a>
                 ))}
-                
               </nav>
             </div>
+
             {post.faq && post.faq.length > 0 && (
-  <section id="faq" className="scroll-mt-24">
-    <h2>FAQ</h2>
-    <div className="space-y-4">
-      {post.faq.map((f, i) => (
-        <details key={i} className="group border border-zinc-200 rounded-lg p-4">
-          <summary className="font-medium cursor-pointer list-none">
-            {f.q}
-          </summary>
-          <p className="mt-2 text-zinc-700">{f.a}</p>
-        </details>
-      ))}
-    </div>
-  </section>
-)}
-            {/* Related */}
+              <section id="faq" className="scroll-mt-24">
+                <h2 className="text-zinc-900">FAQ</h2>
+                <div className="space-y-3">
+                  {post.faq.map((f, i) => (
+                    <details
+                      key={i}
+                      className="group rounded-lg border border-brand-blue/20 bg-brand-blue/5 p-4 transition-colors"
+                    >
+                      <summary className="font-medium cursor-pointer list-none text-brand-blue">
+                        {f.q}
+                      </summary>
+                      <p className="mt-2 text-zinc-800">{f.a}</p>
+                    </details>
+                  ))}
+                </div>
+              </section>
+            )}
+
             {related.length > 0 && (
               <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
-                <div className="text-sm font-semibold text-zinc-700 mb-2">Related reads</div>
+                <div className="text-sm font-semibold text-zinc-800 mb-2">Related reads</div>
                 <ul className="space-y-3">
                   {related.map((p) => (
                     <li key={p.slug} className="flex items-start gap-3">

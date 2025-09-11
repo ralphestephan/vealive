@@ -7,6 +7,7 @@ import TrustSignals from "@/components/TrustSignals";
 import { Award, Lightbulb, Target, TrendingUp, Users } from "lucide-react";
 import SEOJsonLd from "@/components/SEOJsonLd";
 import { SITE } from "@/lib/site";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
 
 export const metadata: Metadata = {
   title: "About VeaLive | Personalized Smart Home Automation in Beirut",
@@ -58,7 +59,10 @@ export default function Page() {
       />
 
       {/* HERO */}
-      <section className="mt-10 mb-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+      <section
+        id="about-hero"
+        className="mt-10 mb-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+      >
         <div className="space-y-6">
           <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
             Bring Your Home to Life
@@ -68,6 +72,15 @@ export default function Page() {
               About VeaLive
             </span>
           </h1>
+
+          {/* Dynamic underline (left-aligned to the title) */}
+          <DynamicUnderline
+            watch="#about-hero"
+            align="left"
+            widthClass="w-24"
+            height={4}
+          />
+
           <p className="text-lg text-zinc-700 max-w-[620px]">
             Beirut-based studio crafting personalized, presence-aware smart home
             automation. From DIY 3D-printed devices to pro-grade integrations—local,
@@ -187,8 +200,8 @@ export default function Page() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { k: "7+", v: "Years delivering", tone: "blue" as const },
-              { k: "3+", v: "Spaces improved", tone: "green" as const },           // changed 21 → 2
-              { k: "2", v: "Devices created", tone: "blue" as const },            // new stat
+              { k: "3+", v: "Spaces improved", tone: "green" as const }, // changed 21 → 2
+              { k: "2", v: "Devices created", tone: "blue" as const }, // new stat
               { k: "90%", v: "Uptime Targets", tone: "green" as const },
             ].map(({ k, v, tone }) => (
               <Card
@@ -205,79 +218,87 @@ export default function Page() {
         </div>
       </section>
 
-{/* MEET THE TEAM (match section/card styling) */}
-<section className="py-16 relative overflow-x-clip">
-  <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
-  <div className="mx-auto max-w-6xl px-4">
-    {/* title block — same pattern as other sections */}
-    <div className="text-center mb-12">
-      <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-        People behind VeaLive
-      </span>
-      <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
-        <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
-          Meet the team
-        </span>
-      </h2>
-      <p className="text-zinc-600 max-w-[720px] mx-auto mt-2">
-        Engineers and makers who tailor devices and systems around your routines.
-      </p>
-      <span className="mt-3 mx-auto block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
-    </div>
+      {/* MEET THE TEAM (match section/card styling) */}
+      <section id="about-team" className="py-16 relative overflow-x-clip">
+        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+        <div className="mx-auto max-w-6xl px-4">
+          {/* title block */}
+          <div className="text-center mb-12">
+            <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+              People behind VeaLive
+            </span>
+            <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
+              <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
+                Meet the team
+              </span>
+            </h2>
+            <p className="text-zinc-600 max-w-[720px] mx-auto mt-2">
+              Engineers and makers who tailor devices and systems around your routines.
+            </p>
 
-    {/* cards — same card recipe used elsewhere */}
-    <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
-      {[
-        {
-          name: "Mohammad Wazzan",
-          role: "Founder & CEO",
-          img: "/images/wazzn.jpg",
-        },
-        {
-          name: "Ralph Estephan",
-          role: "Co-founder & Tech Lead",
-          img: "/images/ralph.jpg",
-        },
-        {
-          name: "George Mouannes",
-          role: "Electro-Mechanical Engineer",
-          img: "/images/george.jpg",
-        },
-      ].map((p) => (
-        <div
-          key={p.name}
-          className="group p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow relative overflow-hidden"
-        >
-          {/* subtle brand wash like other cards */}
-          <div className="pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full bg-brand-blue/5 blur-2xl" />
-          <div className="flex flex-col items-center text-center">
-            <div className="w-28 h-28 rounded-full overflow-hidden ring-1 ring-zinc-200">
-              <Image
-                src={p.img}
-                alt={`${p.name} — ${p.role}`}
-                width={160}
-                height={160}
-                className="w-full h-full object-cover"
+            {/* Dynamic underline (centered) */}
+            <div className="mt-3">
+              <DynamicUnderline
+                watch="#about-team"
+                align="center"
+                widthClass="w-20"
+                height={4}
               />
             </div>
+          </div>
 
-            <div className="mt-4 font-semibold text-zinc-900">{p.name}</div>
-            <div className="mt-1 text-sm text-zinc-600">{p.role}</div>
+          {/* cards */}
+          <div className="grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {[
+              {
+                name: "Mohammad Wazzan",
+                role: "Founder & CEO",
+                img: "/images/wazzn.jpg",
+              },
+              {
+                name: "Ralph Estephan",
+                role: "Co-founder & Tech Lead",
+                img: "/images/ralph.jpg",
+              },
+              {
+                name: "George Mouannes",
+                role: "Electro-Mechanical Engineer",
+                img: "/images/george.jpg",
+              },
+            ].map((p) => (
+              <div
+                key={p.name}
+                className="group p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow relative overflow-hidden"
+              >
+                {/* subtle brand wash like other cards */}
+                <div className="pointer-events-none absolute -top-10 -right-10 w-32 h-32 rounded-full bg-brand-blue/5 blur-2xl" />
+                <div className="flex flex-col items-center text-center">
+                  <div className="w-28 h-28 rounded-full overflow-hidden ring-1 ring-zinc-200">
+                    <Image
+                      src={p.img}
+                      alt={`${p.name} — ${p.role}`}
+                      width={160}
+                      height={160}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
 
-            {/* small pill to mirror chips elsewhere */}
-            <span className="mt-3 inline-flex items-center px-2.5 py-1 rounded-full bg-zinc-100 text-xs text-zinc-700">
-              VeaLive 360
-            </span>
+                  <div className="mt-4 font-semibold text-zinc-900">{p.name}</div>
+                  <div className="mt-1 text-sm text-zinc-600">{p.role}</div>
+
+                  {/* small pill to mirror chips elsewhere */}
+                  <span className="mt-3 inline-flex items-center px-2.5 py-1 rounded-full bg-zinc-100 text-xs text-zinc-700">
+                    VeaLive 360
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
-      ))}
-    </div>
-  </div>
-</section>
-
+      </section>
 
       {/* MISSION & VALUES */}
-      <section className="py-16 relative overflow-x-clip">
+      <section id="about-mission" className="py-16 relative overflow-x-clip">
         <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
         <div className="mx-auto max-w-6xl px-4">
           <div className="text-center mb-12">
@@ -293,7 +314,16 @@ export default function Page() {
               The principles that shape every system we design—our 360° approach and
               Smart Dome concept included.
             </p>
-            <span className="mt-3 mx-auto block h-1 w-20 rounded-full bg-gradient-to-r from-brand-blue to-brand-green" />
+
+            {/* Dynamic underline (centered) */}
+            <div className="mt-3">
+              <DynamicUnderline
+                watch="#about-mission"
+                align="center"
+                widthClass="w-20"
+                height={4}
+              />
+            </div>
           </div>
 
           <div className="grid md:grid-cols-2 gap-6">
@@ -324,23 +354,25 @@ export default function Page() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6 mt-6">
-            {[
-              { Icon: Award, label: "Excellence", tone: "green" as const },
-              { Icon: TrendingUp, label: "Innovation", tone: "green" as const },
-              { Icon: Users, label: "Customer Focus", tone: "green" as const },
-            ].map(({ Icon, label, tone }) => (
-              <div
-                key={label}
-                className="p-6 rounded-card bg-white border  shadow-soft hover:shadow-lg transition-shadow text-center"
-              >
-                <div className={`w-10 h-10 rounded-lg ${chips[tone]} flex items-center justify-center mx-auto mb-3`}>
-                  <Icon className="w-5 h-5" />
-                </div>
-                <h3 className="font-bold">{label}</h3>
-              </div>
-            ))}
-          </div>
+{/* VALUES */}
+<div className="grid grid-cols-3 gap-3 sm:gap-4 mt-6">
+  {[
+    { Icon: Award,      label: "Excellence" },
+    { Icon: TrendingUp, label: "Innovation" },
+    { Icon: Users,      label: "Customer Focus" },
+  ].map(({ Icon, label }) => (
+    <div
+      key={label}
+      className="p-4 sm:p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow text-center flex flex-col items-center"
+    >
+      <div className="w-10 h-10 sm:w-14 sm:h-14 rounded-2xl bg-brand-green/10 text-brand-green flex items-center justify-center mb-2 sm:mb-3">
+        <Icon className="w-5 h-5 sm:w-7 sm:h-7" aria-hidden />
+      </div>
+      <h3 className="text-sm sm:text-base font-bold">{label}</h3>
+    </div>
+  ))}
+</div>
+
         </div>
       </section>
 
