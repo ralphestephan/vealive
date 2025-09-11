@@ -18,9 +18,9 @@ export default function TrustSignals() {
         {items.map(({ title, body, icon: Icon }) => (
           <article
             key={title}
-            className="min-w-[260px] snap-start p-5 rounded-card bg-white border border-zinc-100 shadow-soft flex flex-col items-start"
+            className="min-w-[260px] snap-start p-5  flex flex-col items-start"
           >
-            <div className="w-12 h-12 rounded-2xl bg-brand-green/10 text-brand-green inline-grid place-items-center mb-2">
+            <div className="w-12 h-12 rounded-2xl  inline-grid place-items-center mb-2">
               <Icon className="w-6 h-6" />
             </div>
             <h3 className="text-base font-semibold">{title}</h3>
