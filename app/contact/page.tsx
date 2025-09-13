@@ -23,7 +23,10 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <div className="w-full overflow-x-clip">
+    <div className="w-full overflow-x-clip relative">
+      {/* Full-page background */}
+      <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+
       {/* JSON-LD: ContactPage + contactPoint */}
       <SEOJsonLd
         data={{
@@ -53,8 +56,8 @@ export default function Page() {
       />
 
       {/* HERO */}
-      <section id="contact-hero" className="mt-10 mb-12 relative">
-        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+      <section id="contact-hero" className="mt-0.3 mb-12 relative">
+
         <div className="mx-auto max-w-6xl px-4 text-center">
           <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
             Free consultation
@@ -417,7 +420,9 @@ export default function Page() {
           </a>
           .
         </div>
+        
       </section>
+      
     </div>
   );
 }

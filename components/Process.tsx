@@ -59,7 +59,7 @@ export default function Process() {
     >
       {/* soft background wash that fades near edges */}
       <div
-        className="absolute inset-0 -z-10 gradient-multi opacity-5"
+        className="absolute inset-0 -z-10 gradient-multi opacity-5 "
         style={{
           WebkitMaskImage:
             "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",

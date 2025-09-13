@@ -40,8 +40,17 @@ export default function Page({ params }: Props) {
     .filter((p) => p.slug !== post.slug && p.tags[0] === post.tags[0])
     .slice(0, 3);
 
+  // Build takeaways:
+  const firstWithBullets = post.sections.find((s) => s.bullets && s.bullets.length > 0);
+  const takeaways =
+    firstWithBullets?.bullets?.slice(0, 4) ??
+    post.sections.slice(0, 4).map((s) => s.heading);
+
   return (
-    <main className="w-full overflow-x-clip page-canvas">
+    <main className="w-full overflow-x-clip relative">
+      {/* Full-page background */}
+      <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+
       {/* JSON-LD (BlogPosting) */}
       <SEOJsonLd
         data={{
@@ -62,15 +71,20 @@ export default function Page({ params }: Props) {
       />
 
       {/* HERO */}
-      <section className="mt-10 mb-8 relative section-wrap">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.06] via-white to-brand-green/[0.06]" />
+      <section className="mt-10 mb-8">
         <div className="mx-auto max-w-6xl px-4">
-          <Link
-            href="/insights"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-brand-blue hover:underline"
-          >
-            ← Back to Insights
-          </Link>
+          {/* Breadcrumb chip (revamp of "Back" link) */}
+          <div className="inline-flex items-center gap-2 text-xs">
+            <Link
+              href="/insights"
+              className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white/70 px-3 py-1 text-zinc-700 hover:border-brand-blue hover:text-brand-blue transition"
+              aria-label="Insights"
+            >
+              Insights
+            </Link>
+            <span className="text-zinc-400">/</span>
+            <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-600">Article</span>
+          </div>
 
           <div className="mt-4 grid grid-cols-1 lg:grid-cols-12 gap-8">
             {/* Title + meta */}
@@ -86,9 +100,7 @@ export default function Page({ params }: Props) {
                 </div>
 
                 <p className="mt-4 text-lg leading-7 text-zinc-700">
-                  {"intro" in post && (post as any).intro
-                    ? (post as any).intro
-                    : post.excerpt}
+                  {"intro" in post && (post as any).intro ? (post as any).intro : post.excerpt}
                 </p>
 
                 <div className="mt-3 text-sm text-zinc-600 flex flex-wrap items-center gap-2">
@@ -108,51 +120,79 @@ export default function Page({ params }: Props) {
               </Reveal>
             </header>
 
-            {/* Cover */}
+            {/* Cover (subtle luxe frame) */}
             <Reveal className="lg:col-span-5">
-              <div className="relative aspect-[16/10] rounded-card overflow-hidden border border-zinc-100 shadow-soft">
-                <Image src={post.cover} alt={post.coverAlt} fill className="object-cover" />
-                <div className="absolute inset-0 gradient-brand opacity-15" />
-              </div>
+              <figure className="relative rounded-2xl overflow-hidden border border-zinc-200 shadow-[0_10px_30px_rgba(0,0,0,0.06)]">
+                <div className="absolute -top-16 -left-14 w-56 h-56 bg-brand-blue/10 blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-20 -right-10 w-56 h-56 bg-brand-green/10 blur-3xl pointer-events-none" />
+                <div className="relative aspect-[16/10]">
+                  <Image src={post.cover} alt={post.coverAlt} fill className="object-cover" />
+                </div>
+                <figcaption className="px-4 py-2 text-xs text-zinc-500">
+                  {post.coverAlt}
+                </figcaption>
+              </figure>
             </Reveal>
           </div>
         </div>
       </section>
 
-      {/* BODY + TOC */}
+      {/* TAKEAWAYS + BODY + TOC */}
       <section className="pb-16">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-12 gap-10">
-          {/* Article (darker body) */}
-          <article className="lg:col-span-8 prose max-w-none text-zinc-800">
-            {post.sections.map((s) => (
-              <section key={s.id} id={s.id} className="scroll-mt-24">
-                <h2 className="text-zinc-900">{s.heading}</h2>
-
-                {s.paras.map((p, i) => (
-                  <p key={i} className="text-zinc-800">
-                    {p}
-                  </p>
+          {/* Article column */}
+          <div className="lg:col-span-8 space-y-8">
+            {/* Key Takeaways (creative panel) */}
+            <Reveal className="relative p-6 rounded-2xl bg-gradient-to-br from-white to-zinc-50 border border-zinc-200 shadow-xl overflow-hidden">
+              <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,rgba(0,180,120,0.08),transparent_65%)]" />
+              <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+                Key takeaways
+              </div>
+              <ul className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
+                {takeaways.map((t, i) => (
+                  <li
+                    key={`${t}-${i}`}
+                    className="rounded-xl bg-white border border-zinc-100 shadow-inner p-3 leading-relaxed"
+                  >
+                    {t}
+                  </li>
                 ))}
+              </ul>
+            </Reveal>
 
-                {s.bullets && (
-                  <ul className="[&_li]:text-zinc-800">
-                    {s.bullets.map((b, i) => (
-                      <li key={i}>{b}</li>
-                    ))}
-                  </ul>
-                )}
+            {/* Prose */}
+            <article className="prose max-w-none text-zinc-800 prose-headings:text-zinc-900">
+              {post.sections.map((s) => (
+                <section key={s.id} id={s.id} className="scroll-mt-24">
+                  <h2 className="text-zinc-900">{s.heading}</h2>
 
-                {s.note && (
-                  <div className="rounded-xl p-4 bg-brand-blue/5 border border-brand-blue/10 text-sm text-zinc-800">
-                    <strong className="text-zinc-900">Note:</strong> {s.note}
-                  </div>
-                )}
-              </section>
-            ))}
-          </article>
+                  {s.paras.map((p, i) => (
+                    <p key={i} className="text-zinc-800">
+                      {p}
+                    </p>
+                  ))}
 
-          {/* TOC + meta + FAQ + related */}
+                  {s.bullets && (
+                    <ul className="[&_li]:text-zinc-800">
+                      {s.bullets.map((b, i) => (
+                        <li key={i}>{b}</li>
+                      ))}
+                    </ul>
+                  )}
+
+                  {s.note && (
+                    <div className="rounded-xl p-4 bg-brand-blue/5 border border-brand-blue/10 text-sm text-zinc-800">
+                      <strong className="text-zinc-900">Note:</strong> {s.note}
+                    </div>
+                  )}
+                </section>
+              ))}
+            </article>
+          </div>
+
+          {/* Sidebar column */}
           <aside className="lg:col-span-4 space-y-6 h-fit lg:sticky lg:top-20">
+            {/* TOC */}
             <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
               <div className="text-sm font-semibold text-zinc-800">On this page</div>
               <nav className="mt-2 space-y-2">
@@ -168,6 +208,7 @@ export default function Page({ params }: Props) {
               </nav>
             </div>
 
+            {/* FAQ */}
             {post.faq && post.faq.length > 0 && (
               <section id="faq" className="scroll-mt-24">
                 <h2 className="text-zinc-900">FAQ</h2>
@@ -187,6 +228,7 @@ export default function Page({ params }: Props) {
               </section>
             )}
 
+            {/* Related */}
             {related.length > 0 && (
               <div className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
                 <div className="text-sm font-semibold text-zinc-800 mb-2">Related reads</div>

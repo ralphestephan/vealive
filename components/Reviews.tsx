@@ -16,8 +16,8 @@ type ReviewItem =
       type: "review";
       quote: string;
       author: string;
-      avatar?: string;   // headshot (optional)
-      initials: string;  // fallback if no avatar
+      avatar?: string; // headshot (optional)
+      initials: string; // fallback if no avatar
       category: ReviewCategory;
     };
 
@@ -51,7 +51,6 @@ function initialsFrom(name: string) {
   const parts = name.trim().split(/\s+/);
   return (parts[0]?.[0] ?? "") + (parts[1]?.[0] ?? "");
 }
-
 function Avatar({
   initials,
   alt,
@@ -73,7 +72,6 @@ function Avatar({
     </div>
   );
 }
-
 
 /* =========================
    Auto-rotate for press
@@ -119,11 +117,89 @@ function useInView<T extends HTMLElement>(opts: IntersectionObserverInit = { thr
 }
 
 /* =========================
+   Mobile carousel (auto, compact, spaced)
+========================= */
+function MobileReviewsCarousel({
+  reviews,
+  intervalMs = 3800,
+}: {
+  reviews: Extract<ReviewItem, { type: "review" }>[];
+  intervalMs?: number;
+}) {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    if (!reviews.length) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % reviews.length), intervalMs);
+    return () => clearInterval(id);
+  }, [reviews.length, intervalMs]);
+
+  const themeFor = (c: ReviewCategory) =>
+    ({
+      Devices: { badge: "bg-emerald-100 text-emerald-700", chip: "bg-emerald-50 text-emerald-700" },
+      "Home Automation": { badge: "bg-sky-100 text-sky-700", chip: "bg-sky-50 text-sky-700" },
+      "Smart Dome": { badge: "bg-violet-100 text-violet-700", chip: "bg-violet-50 text-violet-700" },
+    }[c]);
+
+  return (
+    <div className="sm:hidden mt-6">
+      {/* Edge padding + spacing between slides without showing partials */}
+      <div className="overflow-hidden px-3">
+        <div
+          className="flex transition-transform duration-600 ease-out"
+          style={{ transform: `translateX(-${index * 100}%)` }}
+        >
+          {reviews.map((r, i) => {
+            const theme = themeFor(r.category);
+            return (
+              <div className="min-w-full px-1.5" key={i}>
+                <figure className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <Stars />
+                    <Quote className="text-zinc-400" size={18} aria-hidden />
+                  </div>
+                  <blockquote className="mt-3 text-zinc-800 leading-relaxed text-[15px]">
+                    “{r.quote}”
+                  </blockquote>
+                  <figcaption className="mt-4 flex items-center gap-3">
+                    <Avatar initials={r.initials} alt={r.author} badgeClass={theme.badge} />
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-zinc-900 truncate">{r.author}</p>
+                      <span
+                        className={`mt-0.5 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] ${theme.chip}`}
+                      >
+                        {r.category}
+                      </span>
+                    </div>
+                  </figcaption>
+                </figure>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* dots */}
+      <div className="mt-3 flex justify-center gap-1.5">
+        {reviews.map((_, i) => (
+          <span
+            key={i}
+            className={`h-1.5 rounded-full transition-all ${
+              i === index ? "w-4 bg-zinc-800" : "w-2 bg-zinc-300"
+            }`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* =========================
    Component
 ========================= */
 export default function Reviews({
-  plain = true,             // default: NO extra wash to avoid color overload
-  silverPress = true,       // silver press panel
+  plain = true,
+  silverPress = true,
   className = "",
 }: {
   plain?: boolean;
@@ -131,10 +207,10 @@ export default function Reviews({
   className?: string;
 }) {
   const isReview = (r: ReviewItem): r is Extract<ReviewItem, { type: "review" }> => r.type === "review";
-  const isPress  = (r: ReviewItem): r is Extract<ReviewItem, { type: "press"  }> => r.type === "press";
+  const isPress = (r: ReviewItem): r is Extract<ReviewItem, { type: "press" }> => r.type === "press";
 
   const reviews = useMemo(() => REVIEWS.filter(isReview), []);
-  const press   = useMemo(() => REVIEWS.filter(isPress),  []);
+  const press = useMemo(() => REVIEWS.filter(isPress), []);
 
   // light deterministic shuffle
   const shuffled = useMemo(() => {
@@ -154,29 +230,25 @@ export default function Reviews({
   const [pressIndex, setPressIndex] = useAutoRotate(!prefersReduced, press.length, 4200);
   const { ref: listRef, show } = useInView<HTMLDivElement>();
 
-  // subtle category accents
   const catClasses: Record<ReviewCategory, { ring: string; chip: string; badge: string }> = {
-    Devices:           { ring: "ring-emerald-200", chip: "bg-emerald-50 text-emerald-700", badge: "bg-emerald-100 text-emerald-700" },
-    "Home Automation": { ring: "ring-sky-200",     chip: "bg-sky-50 text-sky-700",         badge: "bg-sky-100 text-sky-700" },
-    "Smart Dome":      { ring: "ring-violet-200",  chip: "bg-violet-50 text-violet-700",   badge: "bg-violet-100 text-violet-700" },
+    Devices: { ring: "ring-emerald-200", chip: "bg-emerald-50 text-emerald-700", badge: "bg-emerald-100 text-emerald-700" },
+    "Home Automation": { ring: "ring-sky-200", chip: "bg-sky-50 text-sky-700", badge: "bg-sky-100 text-sky-700" },
+    "Smart Dome": { ring: "ring-violet-200", chip: "bg-violet-50 text-violet-700", badge: "bg-violet-100 text-violet-700" },
   };
 
   const onPressKey = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "ArrowLeft")  setPressIndex((i) => (i - 1 + press.length) % press.length);
+    if (e.key === "ArrowLeft") setPressIndex((i) => (i - 1 + press.length) % press.length);
     if (e.key === "ArrowRight") setPressIndex((i) => (i + 1) % press.length);
   };
 
   return (
     <section className={`py-16 relative ${className}`}>
-      {/* optional soft wash that fades at edges (kept off by default) */}
       {!plain && (
         <div
           className="absolute inset-0 -z-10 bg-gradient-to-b from-brand-blue/[0.06] via-brand-green/[0.06] to-transparent"
           style={{
-            WebkitMaskImage:
-              "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
-            maskImage:
-              "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+            WebkitMaskImage: "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+            maskImage: "linear-gradient(to bottom, transparent, black 10%, transparent 90%, transparent)",
           }}
         />
       )}
@@ -214,11 +286,11 @@ export default function Reviews({
           </div>
         </div>
 
-        {/* Reviews grid (reveals on scroll) */}
+        {/* Desktop / tablet grid */}
         <div
           ref={listRef}
           className={[
-            "grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-700",
+            "hidden sm:grid gap-6 sm:grid-cols-2 lg:grid-cols-3 transition-all duration-700",
             show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
           ].join(" ")}
         >
@@ -238,31 +310,31 @@ export default function Reviews({
                   <Quote className="text-zinc-400" size={18} aria-hidden />
                 </div>
 
-                <blockquote className="mt-4 text-zinc-800 leading-relaxed">
-                  “{r.quote}”
-                </blockquote>
+                <blockquote className="mt-4 text-zinc-800 leading-relaxed">“{r.quote}”</blockquote>
 
-              <figcaption className="mt-5 flex items-center gap-3">
-                <Avatar initials={r.initials} alt={r.author} badgeClass={theme.badge} />
-                <div className="min-w-0">
-                  <p className="text-sm font-semibold text-zinc-900 truncate">{r.author}</p>
-                  <span
-                    className={`mt-0.5 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] ${theme.chip}`}
-                  >
-                    {r.category}
-                  </span>
-                </div>
-              </figcaption>
-
+                <figcaption className="mt-5 flex items-center gap-3">
+                  <Avatar initials={r.initials} alt={r.author} badgeClass={theme.badge} />
+                  <div className="min-w-0">
+                    <p className="text-sm font-semibold text-zinc-900 truncate">{r.author}</p>
+                    <span
+                      className={`mt-0.5 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] ${theme.chip}`}
+                    >
+                      {r.category}
+                    </span>
+                  </div>
+                </figcaption>
               </figure>
             );
           })}
         </div>
 
-        {/* Press — silver panel with always-visible arrows (top-right) */}
-        {press.length > 0 && (
+        {/* Mobile-only carousel (now ABOVE press) */}
+        <MobileReviewsCarousel reviews={shuffled} />
+
+        {/* Press — silver panel */}
+        {silverPress && press.length > 0 && (
           <div
-            className="relative mt-10 rounded-2xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-800 p-6 shadow-soft overflow-hidden"
+            className="relative mt-8 rounded-2xl border border-zinc-200 bg-gradient-to-br from-zinc-50 to-zinc-100 text-zinc-800 p-6 shadow-soft overflow-hidden"
             role="region"
             aria-label="Press reviews"
             onKeyDown={onPressKey}
@@ -273,7 +345,6 @@ export default function Reviews({
               <p className="text-sm font-semibold">What the press says</p>
             </div>
 
-            {/* controls */}
             <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
               <button
                 onClick={() => setPressIndex((i) => (i - 1 + press.length) % press.length)}

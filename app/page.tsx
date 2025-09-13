@@ -40,7 +40,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="w-full overflow-x-clip page-canvas">
+    <main className="w-full overflow-x-clip">
       <SEOJsonLd
         data={[
           {
@@ -74,9 +74,9 @@ export default function Page() {
 
       {/* SERVICES */}
       <Reveal>
-        <div className="mx-auto max-w-6xl px-4">
+        
           <Services />
-        </div>
+        
       </Reveal>
 
       {/* POPULAR SOLUTIONS */}
@@ -85,7 +85,7 @@ export default function Page() {
           <div className="mx-auto max-w-6xl px-4">
             <div className="relative mb-6 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
               <div>
-                <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+                <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-200 text-xs font-medium">
                   Curated picks
                 </span>
                 <h2 className="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight">
@@ -121,15 +121,15 @@ export default function Page() {
       </Reveal>
 
       {/* These components already include vertical rhythm; we keep containers but no extra backdrops */}
-      <Reveal><div className="mx-auto max-w-6xl px-4"><Process /></div></Reveal>
-      <Reveal><div className="mx-auto max-w-6xl px-4"><SmartDomePromo /></div></Reveal>
-      <Reveal><div className="mx-auto max-w-6xl px-4"><Ecosystem /></div></Reveal>
+      <Reveal><Process /></Reveal>
+      <Reveal><SmartDomePromo /></Reveal>
+      <Reveal><Ecosystem /></Reveal>
 
       {/* Reviews with plain background + silver press so it blends with canvas */}
-      <Reveal><div className="mx-auto max-w-6xl px-4"><Reviews plain silverPress /></div></Reveal>
+      <Reveal><Reviews plain silverPress /></Reveal>
 
-      <Reveal><div className="mx-auto max-w-6xl px-4"><Brands /></div></Reveal>
-      <Reveal><div className="mx-auto max-w-6xl px-4"><BlogTeasers /></div></Reveal>
+      <Reveal><Brands /></Reveal>
+      <Reveal><BlogTeasers /></Reveal>
       <Reveal><CTA /></Reveal>
       <Reveal><TrustSignals /></Reveal>
     </main>

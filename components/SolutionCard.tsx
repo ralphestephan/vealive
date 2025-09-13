@@ -13,7 +13,7 @@ export default function SolutionCard({ slug, title, description, image }: Props)
     <article
       className="
         group h-full flex flex-col rounded-card overflow-hidden
-        bg-white border border-zinc-100 shadow-soft
+        bg-white border border-zinc-100 
         hover:shadow-lg transition-[box-shadow,transform,filter] duration-300
       "
     >

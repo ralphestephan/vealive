@@ -36,7 +36,9 @@ const rings = {
 
 export default function Page() {
   return (
-    <div className="w-full overflow-x-clip">
+    <div className="w-full overflow-x-clip relative">
+  
+
       {/* JSON-LD (Organization) */}
       <SEOJsonLd
         data={{
@@ -59,12 +61,12 @@ export default function Page() {
       />
 
       {/* HERO */}
-      <section
-        id="about-hero"
-        className="mt-10 mb-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
-      >
-        <div className="space-y-6">
-          <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+      <section id="about-hero" className="mt-0.5 mb-16 ">
+
+        <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+
+          <div className="space-y-6">
+          <span className="pill">
             Bring Your Home to Life
           </span>
           <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
@@ -100,7 +102,7 @@ export default function Page() {
               Free Consultation
             </Link>
           </div>
-        </div>
+          </div>
 
         <div className={`relative rounded-card overflow-hidden card ${rings.blue}`}>
           <div className="absolute inset-0 gradient-brand opacity-25 pointer-events-none" />
@@ -113,19 +115,20 @@ export default function Page() {
             priority
           />
         </div>
+        </div>
       </section>
 
       {/* WHO WE ARE / WHAT WE BELIEVE */}
-      <section className="py-16 relative overflow-x-clip">
+      <section className=" py-16 relative overflow-x-clip">
         <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
-        <div className="pointer-events-none absolute -top-16 -left-10 w-56 h-56 rounded-full bg-brand-blue/10 blur-3xl" />
+        <div className="pointer-events-none absolute -left-10 w-56 h-56 rounded-full bg-brand-blue/10 blur-3xl" />
         <div className="pointer-events-none absolute -bottom-16 -right-10 w-56 h-56 rounded-full bg-brand-green/10 blur-3xl" />
 
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Who we are */}
             <div className="group p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow relative overflow-hidden">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-brand-blue/10 text-brand-blue text-xs font-semibold">
+              <div className="pill bg-brand-blue/10 text-brand-blue">
                 Who we are
               </div>
               <h2 className="text-3xl font-bold mt-3">
@@ -154,7 +157,7 @@ export default function Page() {
 
             {/* What we believe */}
             <div className="group p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow relative overflow-hidden">
-              <div className="inline-flex items-center px-3 py-1 rounded-full bg-brand-green/10 text-brand-green text-xs font-semibold">
+              <div className="pill bg-brand-green/10 text-brand-green">
                 What we believe
               </div>
               <ul className="mt-4 grid gap-4">
@@ -196,7 +199,9 @@ export default function Page() {
 
       {/* PROOF / STATS */}
       <section className="py-10">
-        <div className="mx-auto max-w-6xl px-4">
+
+        <div className="mx-auto max-w-6xl px-4 ">
+
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { k: "7+", v: "Years delivering", tone: "blue" as const },
@@ -220,7 +225,7 @@ export default function Page() {
 
       {/* MEET THE TEAM (match section/card styling) */}
       <section id="about-team" className="py-16 relative overflow-x-clip">
-        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+
         <div className="mx-auto max-w-6xl px-4">
           {/* title block */}
           <div className="text-center mb-12">

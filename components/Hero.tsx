@@ -51,14 +51,25 @@ export default function Hero() {
       id="hero"
       ref={ref}
       className={[
-        "mt-8 md:mt-10 mb-12 md:mb-16 grid grid-cols-1 md:grid-cols-2 gap-8 items-center",
+        "mt-8 md:mt-10 mb-12 md:mb-16",
         "transition-all duration-700",
         show ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2",
+        
       ].join(" ")}
     >
-      {/* LEFT: copy */}
-      <div className="space-y-6">
-        <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+        <div
+        className="absolute inset-0 -z-10 gradient-multi opacity-5 "
+        style={{
+          WebkitMaskImage:
+            "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+          maskImage:
+            "linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)",
+        }}
+      />
+      <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        {/* LEFT: copy */}
+        <div className="space-y-6">
+        <span className="pill">
           Bring your Home to Life
         </span>
 
@@ -84,10 +95,11 @@ export default function Hero() {
             Free Consultation
           </Link>
         </div>
-      </div>
 
-      {/* RIGHT: visual — GIF crossfade, soft edge-faded gradient behind */}
-      <div className="relative rounded-card overflow-hidden border border-zinc-100 shadow-soft aspect-[4/3]">
+        </div>
+
+        {/* RIGHT: visual — GIF crossfade, soft edge-faded gradient behind */}
+        <div className="relative rounded-card overflow-hidden border border-zinc-100 shadow-soft aspect-[4/3]">
         {/* contained brand wash with edge fade so it blends into next sections */}
         <div
           className="absolute inset-0 -z-10 gradient-multi opacity-10"
@@ -119,8 +131,9 @@ export default function Hero() {
           />
         ))}
 
-        {/* subtle inner ring to define the card without a harsh border on dark/gradient backgrounds */}
-        <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-zinc-900/5" />
+          {/* subtle inner ring to define the card without a harsh border on dark/gradient backgrounds */}
+          <div className="pointer-events-none absolute inset-0 ring-1 ring-inset ring-zinc-900/5" />
+        </div>
       </div>
     </section>
   );

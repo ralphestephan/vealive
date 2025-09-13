@@ -55,9 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-screen text-zinc-800 antialiased overflow-x-hidden">
 
         <Header />
-        
-        
-        <main className="mx-auto max-w-6xl px-4">{children}</main>
+        <main className="w-full overflow-x-clip">{children}</main>
         <BackToTopFab insetClass="bottom-6 right-6 sm:bottom-8 sm:right-8" size={56} superAt={98} />
         <SiteFooter />
       </body>

@@ -183,7 +183,7 @@ export default function FAQPage() {
 
       {/* HERO */}
       <section id="faq-hero" className="mt-10 mb-12 relative section-wrap">
-        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+        <div className="absolute inset-0 -z-10  " />
         <div className="mx-auto max-w-6xl px-4 text-center ">
           <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
             FAQ
@@ -240,9 +240,7 @@ export default function FAQPage() {
               </Link>
             </div>
 
-            <Link href="#top" className="btn-outline w-full h-10 text-center">
-              Back to top
-            </Link>
+
           </aside>
 
           {/* Content */}

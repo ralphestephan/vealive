@@ -12,7 +12,7 @@ const services = [
     body:
       "We assess your space and goals, then craft a tailored smart-home plan across comfort, security, and energy.",
     icon: Home,
-    href: "/contact",
+    href: "/solutions",
     tint: "blue" as const,
   },
   {
@@ -28,7 +28,7 @@ const services = [
     body:
       "Real-time usage, alerts, and insights to cut waste and optimize bills—at home or across properties.",
     icon: PlugZap,
-    href: "/solutions",
+    href: "/solutions/energy-monitoring",
     tint: "blue" as const,
   },
   {

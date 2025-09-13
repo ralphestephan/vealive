@@ -19,6 +19,7 @@ import {
   Camera, Lock
 } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
+import DynamicUnderline from "@/components/ui/DynamicUnderline";
 
 type Props = { params: { slug: string } };
 
@@ -207,7 +208,10 @@ export default function Page({ params }: Props) {
   const badge = BADGE_BY_SLUG[canonical];
 
   return (
-    <main className="w-full overflow-x-clip page-canvas">
+    <main className="w-full overflow-x-clip relative">
+      {/* Full-page background */}
+      <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+
       <SEOJsonLd
         data={{
           "@context": "https://schema.org",
@@ -220,20 +224,10 @@ export default function Page({ params }: Props) {
       />
 
       {/* HERO */}
-      <section id="solution-hero" className="mt-10 mb-16 relative section-wrap">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.06] via-white to-brand-green/[0.06]" />
+      <section id="solution-hero" className="mt-0.5 mb-14">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <Reveal className="space-y-6">
-            <div>
-              <Link
-                href="/solutions"
-                className="inline-flex items-center gap-2 text-sm text-zinc-600 hover:text-zinc-900"
-                aria-label="Back to all solutions"
-              >
-                <span aria-hidden>←</span> Back to all solutions
-              </Link>
-            </div>
-
+            {/* Removed "Back to all solutions" link */}
             <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
               {badge}
             </span>
@@ -244,7 +238,11 @@ export default function Page({ params }: Props) {
               </span>
             </h1>
 
-            <p className="text-lg text-zinc-700 max-w-[640px]">{s.description}</p>
+            <div className="mt-1">
+              <DynamicUnderline watch="#solution-hero" align="left" widthClass="w-24" height={4} />
+            </div>
+
+            <p className="text-lg text-zinc-700 max-w-[64ch]">{s.description}</p>
 
             <div className="flex gap-3 pt-1">
               <Link href="/contact" className="px-5 py-3 rounded-full bg-brand-green text-white font-semibold">
@@ -276,10 +274,67 @@ export default function Page({ params }: Props) {
         </div>
       </section>
 
-      {/* TECH STACK */}
-      <section className="mb-10">
+      {/* SOLUTION SNAPSHOT (creative, like HomeDome specs) */}
+      <section className="mb-12">
         <div className="mx-auto max-w-6xl px-4">
-          <Reveal as="div" className="rounded-card bg-white border border-zinc-100 shadow-soft p-6 section-wrap">
+          <Reveal className="relative p-6 md:p-8 rounded-2xl bg-gradient-to-br from-white to-zinc-50 border border-zinc-200 shadow-xl overflow-hidden">
+            <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_top_left,rgba(0,180,120,0.08),transparent_65%)]" />
+
+            <div className="flex items-start justify-between gap-6 flex-col lg:flex-row">
+              <div className="max-w-[56ch]">
+                <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+                  Solution Snapshot
+                </div>
+                <h2 className="mt-3 text-2xl font-extrabold tracking-tight text-brand-blue">
+                  What you get at a glance
+                </h2>
+                <p className="mt-2 text-zinc-700">
+                  A refined bundle of capabilities and outcomes—curated devices, reliable automations, and
+                  future-proof integrations that meet your space where it is.
+                </p>
+              </div>
+
+              {/* stat band */}
+              <div className="w-full lg:w-auto">
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { k: "Setup", v: "Fast" },
+                    { k: "Reliability", v: "Local-first" },
+                    { k: "Integrations", v: "Open" },
+                  ].map(({ k, v }) => (
+                    <div key={k} className="rounded-xl bg-white border border-zinc-200 shadow-inner p-3 text-center">
+                      <div className="text-[11px] uppercase tracking-wide text-zinc-500">{k}</div>
+                      <div className="text-base font-semibold text-zinc-900">{v}</div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* grid chips (no icons — premium labels) */}
+            <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
+              {[
+                { label: "Platforms", value: "Apple / Google / Alexa" },
+                { label: "Network", value: "Thread • Zigbee • Wi-Fi" },
+                { label: "Privacy", value: "Local control by default" },
+                { label: "Dashboards", value: "Rooms • Scenes • Metrics" },
+                { label: "Security", value: "Hardened defaults + keys" },
+                { label: "Support", value: "On-site install & tuning" },
+              ].map((x) => (
+                <div key={x.label} className="p-3 rounded-lg bg-white border border-zinc-100 shadow-inner">
+                  <span className="block text-[11px] uppercase tracking-wide text-zinc-500">{x.label}</span>
+                  <span className="font-semibold text-zinc-800">{x.value}</span>
+                </div>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+      </section>
+
+      {/* TECH STACK */}
+      <section className="mb-12">
+        <div className="mx-auto max-w-6xl px-4">
+          <Reveal as="div" className="rounded-card bg-white border border-zinc-100 shadow-soft p-6 relative overflow-hidden">
             <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.04] via-white to-brand-green/[0.04]" />
             <div className="flex items-center justify-between gap-4 flex-wrap">
               <div>
@@ -320,10 +375,7 @@ export default function Page({ params }: Props) {
               as="article"
               className="p-6 rounded-card shadow-soft bg-white border border-zinc-100 hover:shadow-lg transition-shadow"
             >
-              <div className="flex items-center gap-2 mb-2 text-brand-blue">
-                <CheckCircle className="h-5 w-5" aria-hidden />
-                <h3 className="font-bold">{item}</h3>
-              </div>
+              <div className="mb-2 font-bold text-brand-blue">{item}</div>
               <p className="text-sm text-zinc-600">
                 Tailored to your routines with VeaLive’s curated devices and flows.
               </p>
@@ -333,8 +385,7 @@ export default function Page({ params }: Props) {
       </section>
 
       {/* DETAILS */}
-      <section className="py-12 relative section-wrap">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.05] via-white to-brand-green/[0.05]" />
+      <section className="py-12 relative">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-2 gap-6">
           <Reveal as="div" className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft hover:shadow-lg transition-shadow">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full bg-zinc-100 text-xs font-medium">
@@ -343,7 +394,7 @@ export default function Page({ params }: Props) {
             <ul className="mt-4 space-y-2 text-zinc-700">
               {expect.map((t) => (
                 <li key={t} className="flex items-start gap-2">
-                  <CheckCircle className="h-5 w-5 text-brand-blue shrink-0 mt-0.5" />
+                  <span className="mt-1 block h-2 w-2 rounded-full bg-brand-blue" aria-hidden />
                   <span>{t}</span>
                 </li>
               ))}

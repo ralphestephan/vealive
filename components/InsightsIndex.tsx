@@ -47,7 +47,7 @@ export default function InsightsIndex({ posts }: { posts: Post[] }) {
     <>
       {/* HERO */}
       <section className="mt-10 mb-10 relative">
-        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+        <div className="absolute inset-0 -z-10 " />
         <div className="mx-auto max-w-6xl px-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
             {/* Feature card */}

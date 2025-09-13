@@ -51,11 +51,11 @@ export default function Page() {
       />
 
       {/* HERO */}
-      <section className="mt-10 mb-8 relative section-wrap">
-        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.06] via-white to-brand-green/[0.06]" />
+      <section className=" mt-0.5 mb-8 relative">
+        <div className="absolute inset-0 -z-10 bg-gradient-to-br from-brand-blue/[0.06] via-transparent " />
         <div className="mx-auto max-w-6xl px-4 text-center">
           <Reveal>
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
+            <span className="inline-flex items-center px-5 py-1 rounded-full bg-zinc-100 text-xs font-medium">
               Insights
             </span>
             <h1 className="mt-2 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
@@ -75,7 +75,7 @@ export default function Page() {
 
       {/* LIST */}
       <section className="pb-16">
-        <div className="mx-auto max-w-6xl px-4">
+        <div className=" max-w-6xl px-4 ">
           {/* InsightsIndex already renders cards; it’ll inherit our scroll reveal/utilities */}
           <InsightsIndex posts={insights} />
         </div>

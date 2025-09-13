@@ -10,6 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import { CartProvider } from "@/components/cart/CartContext";
 import CartButton from "@/components/cart/CartButton";
 import CartDrawer from "@/components/cart/CartDrawer";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Shop Smart Devices | VeaLive360 E-Commerce",
@@ -37,10 +38,48 @@ const products: Product[] = [
   { id: "6", title: "Smart Hub",         desc: "Unify all your devices under one secure controller.",             price: 79,  img: "/images/placeholders/product-hub.jpg",        category: "Hubs",     tags: ["matter","thread"] },
 ];
 
-export default function Page() {
+// ── helpers (server-side filtering via search params) ───────────────────────────
+function uniq<T>(arr: T[]) { return Array.from(new Set(arr)); }
+function filterProducts(all: Product[], q?: string, cat?: string) {
+  let list = all;
+  if (cat) list = list.filter(p => p.category.toLowerCase() === cat.toLowerCase());
+  if (q) {
+    const needle = q.toLowerCase();
+    list = list.filter(p =>
+      p.title.toLowerCase().includes(needle) ||
+      p.desc.toLowerCase().includes(needle) ||
+      p.tags?.some(t => t.toLowerCase().includes(needle))
+    );
+  }
+  return list;
+}
+function sortProducts(list: Product[], sort?: string) {
+  switch (sort) {
+    case "price-asc":  return [...list].sort((a,b)=>a.price-b.price);
+    case "price-desc": return [...list].sort((a,b)=>b.price-a.price);
+    case "alpha":      return [...list].sort((a,b)=>a.title.localeCompare(b.title));
+    default:           return list;
+  }
+}
+
+export default function Page({
+  searchParams,
+}: {
+  searchParams?: { q?: string; cat?: string; sort?: string };
+}) {
+  const q = searchParams?.q?.trim() || "";
+  const cat = searchParams?.cat || "";
+  const sort = searchParams?.sort || "";
+
+  const categories = uniq(products.map(p => p.category));
+  const filtered = sortProducts(filterProducts(products, q, cat), sort);
+
   return (
     <CartProvider>
-      <main className="w-full overflow-x-clip page-canvas">
+      <main className="w-full overflow-x-clip relative">
+        {/* Full-page background */}
+        <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+
         {/* JSON-LD: ItemList + WebSite SearchAction */}
         <SEOJsonLd
           data={[
@@ -80,22 +119,30 @@ export default function Page() {
           ]}
         />
 
+        {/* PROMO RIBBON */}
+        <div className="w-full">
+          <div className="mx-auto max-w-6xl px-4">
+            <div className="mt-0.5 mb-2 rounded-xl border border-zinc-200 bg-white/20 backdrop-blur-sm p-2 text-center text-sm text-zinc-700 shadow-soft">
+              Free consult with every order • Local-first setups • Easy returns
+            </div>
+          </div>
+        </div>
+
         {/* HERO */}
-        <section id="shop-hero" className="mt-10 mb-10 relative">
-          <div className="absolute inset-0 -z-10 gradient-multi opacity-5" />
+        <section id="shop-hero" className="mt-2 mb-6">
           <div className="mx-auto max-w-6xl px-4">
             <div className="flex items-start justify-between gap-4">
               <div className="text-center md:text-left">
                 <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
                   Curated &amp; compatible
                 </span>
-                <h1 className="mt-2 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight reviews-title">
+                <h1 className="mt-2 text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
                   <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
                     Shop Smart Devices
                   </span>
                 </h1>
                 <p className="mt-3 text-zinc-700 max-w-2xl">
-                  Curated hardware that plays nicely together. Pre-configured bundles and Shopify checkout coming soon.
+                  Hardware we trust to play nicely together. Bundles & Shopify checkout coming soon.
                 </p>
                 <div className="mt-3">
                   <DynamicUnderline watch="#shop-hero" align="left" widthClass="w-20" height={4} />
@@ -110,20 +157,110 @@ export default function Page() {
           </div>
         </section>
 
+        {/* TOOLBAR (search + category pills + sort) */}
+        <section aria-label="Shop toolbar" className="mb-8">
+          <div className="mx-auto max-w-6xl px-4">
+            <form method="get" className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+              {/* Search */}
+              <input
+                type="text"
+                name="q"
+                defaultValue={q}
+                placeholder="Search devices (e.g., thermostat, thread)…"
+                className="
+                  w-full md:w-[420px] rounded-xl border border-zinc-300 bg-white/90 px-3 py-2
+                  focus:outline-none focus:ring-2 focus:ring-brand-blue transition
+                "
+              />
+
+              {/* Sort */}
+              <select
+                name="sort"
+                defaultValue={sort}
+                className="
+                  rounded-xl border border-zinc-300 bg-white/90 px-3 py-2
+                  focus:outline-none focus:ring-2 focus:ring-brand-blue transition
+                "
+              >
+                <option value="">Sort: Featured</option>
+                <option value="price-asc">Price: Low to High</option>
+                <option value="price-desc">Price: High to Low</option>
+                <option value="alpha">Name: A → Z</option>
+              </select>
+
+              {/* Submit */}
+              <button
+                type="submit"
+                className="rounded-full bg-brand-blue text-white font-semibold px-5 py-2 hover:brightness-110 transition"
+              >
+                Apply
+              </button>
+
+              {/* Reset */}
+              {(q || cat || sort) && (
+                <Link
+                  href="/ecommerce"
+                  className="text-sm text-zinc-600 underline decoration-dotted underline-offset-4"
+                >
+                  Reset
+                </Link>
+              )}
+            </form>
+
+            {/* Category pills (links with cat=) */}
+            <div className="mt-4 flex flex-wrap gap-2">
+              <Link
+                href="/ecommerce"
+                className={`px-3 py-1.5 rounded-full border text-sm ${
+                  !cat
+                    ? "bg-brand-green text-white border-brand-green"
+                    : "bg-white border-zinc-300 hover:border-brand-green"
+                }`}
+              >
+                All
+              </Link>
+              {categories.map((c) => (
+                <Link
+                  key={c}
+                  href={`/ecommerce?cat=${encodeURIComponent(c)}${q ? `&q=${encodeURIComponent(q)}` : ""}${sort ? `&sort=${encodeURIComponent(sort)}` : ""}`}
+                  className={`px-3 py-1.5 rounded-full border text-sm ${
+                    cat === c
+                      ? "bg-brand-green text-white border-brand-green"
+                      : "bg-white border-zinc-300 hover:border-brand-green"
+                  }`}
+                >
+                  {c}
+                </Link>
+              ))}
+            </div>
+
+            {/* Result meta */}
+            <div className="mt-3 text-sm text-zinc-600">
+              {filtered.length} item{filtered.length !== 1 ? "s" : ""} {cat ? `in ${cat}` : ""}{q ? ` • matching “${q}”` : ""}
+            </div>
+          </div>
+        </section>
+
         {/* CART BUTTON (mobile) */}
         <div className="mx-auto max-w-6xl px-4 md:hidden mb-4">
           <CartButton className="w-full justify-center" />
         </div>
 
-        {/* GRID with Reveal */}
+        {/* GRID */}
         <section className="pb-6">
           <Reveal>
-            <EcommerceGrid products={products} />
+            <EcommerceGrid products={filtered} />
           </Reveal>
         </section>
 
         <CTA />
         <TrustSignals />
+
+        {/* Floating cart for mobile/scroll (optional, unobtrusive) */}
+        <div className="fixed bottom-4 right-4 md:hidden">
+          <CartButton />
+        </div>
+
         <CartDrawer />
       </main>
     </CartProvider>
