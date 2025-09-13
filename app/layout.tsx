@@ -17,6 +17,11 @@ export const metadata: Metadata = {
     template: `%s | VeaLive360`,
   },
   description: SITE.description,
+  icons: {
+    icon: "/favicon.ico",       // default favicon
+    shortcut: "/favicon.ico",   // legacy browsers
+    apple: "/favicon.ico",      // Apple touch icon
+  },
   keywords: Array.from(SITE.keywords),
   openGraph: {
     type: "website",
