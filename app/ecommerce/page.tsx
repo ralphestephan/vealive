@@ -256,10 +256,14 @@ export default function Page({
         <CTA />
         <TrustSignals />
 
-        {/* Floating cart for mobile/scroll (optional, unobtrusive) */}
-        <div className="fixed bottom-4 right-4 md:hidden">
+        {/* Floating cart (mobile, top-right) */}
+        <div
+          className="md:hidden fixed right-4 z-[60]"
+          style={{ top: "calc(env(safe-area-inset-top, 0px) + 64px)" }} // sits below your header
+        >
           <CartButton />
         </div>
+
 
         <CartDrawer />
       </main>
