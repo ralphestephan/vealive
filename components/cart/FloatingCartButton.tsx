@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default function FloatingCartButton({ anchor, topOffset = 64 }: Props) {
-  const { isOpen } = useCart(); // assumes your CartContext exposes isOpen
+  const { open } = useCart(); // use correct property from CartContext
   const [visible, setVisible] = useState(false);
   const observed = useRef<Element | null>(null);
 
@@ -32,7 +32,7 @@ export default function FloatingCartButton({ anchor, topOffset = 64 }: Props) {
   }, [anchor]);
 
   // hide if cart drawer is open or anchor not found
-  if (!visible || isOpen) return null;
+  if (!visible || open) return null;
 
   return (
     <div
