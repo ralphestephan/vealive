@@ -21,6 +21,8 @@ function renderEmailHTML(order: any) {
   const phone = process.env.WHISH_PHONE || '';
   const titles = items.map(i => `${i.title}×${i.qty ?? 1}`).join(', ');
   const whishLink = `whish://pay?to=${encodeURIComponent(phone)}&amount=${order.total.toFixed(2)}&note=${encodeURIComponent(`Order ${order.number} — ${titles}`)}`;
+  const orderUrl =
+    (process.env.NEXT_PUBLIC_SITE_URL || '').replace(/\/$/, '') + `/order/${order.number}`;
 
   return `
   <div style="font-family:Inter,system-ui,Segoe UI,Roboto,Arial,sans-serif;max-width:640px;margin:0 auto;">
@@ -40,8 +42,9 @@ function renderEmailHTML(order: any) {
     <p style="margin-top:12px;font-weight:600">Total: $${order.total.toFixed(2)} ${order.currency}</p>
     ${
       order.method === 'whish'
-      ? `<p><strong>Pay with Whish:</strong> Send <strong>$${order.total.toFixed(2)}</strong> to <strong>${phone}</strong> and put <strong>${order.number}</strong> in the note.</p>
-         <p><a href="${whishLink}">Open Whish app</a></p>`
+      ? `<p>Thanks for your order. To complete payment, open the page below from your phone:</p>
+        <p><a href="${orderUrl}">View payment instructions</a></p>
+        <p style="font-size:12px;color:#666">If the app doesn't open automatically, the page shows your number, amount, and note with “Copy” buttons.</p>`
       : `<p><strong>Cash on Delivery:</strong> prepare $${order.total.toFixed(2)}. We’ll contact you to schedule delivery.</p>`
     }
     <hr style="margin:16px 0;border:none;border-top:1px solid #eee" />
