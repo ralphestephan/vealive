@@ -4,6 +4,7 @@ import { X, Plus, Minus, Trash2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "./CartContext";
+import ShopifyCheckoutButton from '@/components/ShopifyCheckoutButton';
 
 export default function CartDrawer() {
   const { lines, remove, changeQty, total, open, setOpen } = useCart();
@@ -64,13 +65,10 @@ export default function CartDrawer() {
             <span>Total</span>
             <span>${total.toFixed(2)}</span>
           </div>
-          <Link
-            href="#"
-            className="block text-center rounded-full h-11 leading-[44px] text-white font-semibold
-                       bg-gradient-to-r from-brand-blue to-brand-green hover:brightness-110"
-          >
-            Checkout
-          </Link>
+
+            <ShopifyCheckoutButton className="mt-2 w-full" />
+          
+     
           {/* SHOPIFY: route to your hosted checkout or `/checkout` after cartCreate */}
         </div>
       </aside>

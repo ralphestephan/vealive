@@ -5,8 +5,11 @@ import { Poppins } from "next/font/google";
 import SiteFooter from "@/components/SiteFooter";
 import { SITE } from "@/lib/site";
 import BackToTopFab from "@/components/ui/BackToTopFab";
-import ScrollReveal from "@/components/ui/ScrollReveal";
 import Header from "@/components/Header";
+import { Providers } from './providers';
+
+
+
 
 const poppins = Poppins({ subsets: ["latin"], display: "swap", variable: "--font-poppins", weight: ["700"] });
 
@@ -58,11 +61,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={poppins.variable}>
       
       <body className="min-h-screen text-zinc-800 antialiased overflow-x-hidden">
-
+        <Providers>
         <Header />
         <main className="w-full overflow-x-clip">{children}</main>
         <BackToTopFab insetClass="bottom-6 right-6 sm:bottom-8 sm:right-8" size={56} superAt={98} />
         <SiteFooter />
+        </Providers>
       </body>
     </html>
   );

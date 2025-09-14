@@ -3,6 +3,7 @@
 
 import Image from "next/image";
 import { useCart } from "@/components/cart/CartContext";
+import Link from 'next/link';
 
 export type Product = {
   id: string;
@@ -10,7 +11,7 @@ export type Product = {
   desc: string;
   price: number;        // numeric for sorting + JSON-LD
   img: string;
-  category: "Lighting" | "Climate" | "Security" | "Audio" | "Hubs";
+  category: "Lighting" | "Climate" | "Security" | "Audio" | "Hubs" | "Other";
   tags?: string[];
 };
 
@@ -45,14 +46,16 @@ export default function EcommerceGrid({ products }: { products: Product[] }) {
             <h3 className="font-semibold">{p.title}</h3>
             <p className="text-sm text-zinc-600 mt-1 flex-1">{p.desc}</p>
             <div className="mt-2 text-sm font-semibold">${p.price.toFixed(2)}</div>
+            <p className={`mt-1 text-xs ${ (p as any).available ? 'text-emerald-600' : 'text-rose-600' }`}>
+              {(p as any).available ? 'In stock' : 'Out of stock'}
+            </p>
+
 
             <div className="mt-3 flex gap-2">
-              <button
-                className="shrink-0 px-4 h-10 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-blue to-brand-green text-white text-sm font-semibold hover:brightness-110"
-                onClick={()=>alert("Product details coming soon")}
-              >
-                View
-              </button>
+            <Link href={`/ecommerce/${encodeURIComponent((p as any).handle ?? '')}`} className="shrink-0 px-4 h-10 inline-flex items-center justify-center rounded-full bg-gradient-to-r from-brand-blue to-brand-green text-white text-sm font-semibold hover:brightness-110">
+              View
+            </Link>
+
               <button
                 onClick={() => add({ id: p.id, title: p.title, price: p.price, img: p.img }, 1)}
                 className="shrink-0 px-4 h-10 inline-flex items-center justify-center rounded-full border border-zinc-300 text-sm font-semibold hover:border-brand-blue"

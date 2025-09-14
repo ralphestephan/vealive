@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")   // use PRISMA_DATABASE_URL
+  directUrl = env("DIRECT_URL")     // use POSTGRES_URL
+}
+
+model Order {
+  id        Int      @id @default(autoincrement())
+  number    String   @unique
+  status    String   @default("pending") // pending|awaiting_whish|cash_on_delivery|paid|cancelled
+  method    String   // 'cash' | 'whish'
+  email     String?
+  phone     String?
+  name      String?
+  address1  String?
+  address2  String?
+  city      String?
+  postal    String?
+  country   String?
+  items     Json
+  subtotal  Float
+  total     Float
+  currency  String   @default("USD")
+  createdAt DateTime @default(now())
+}
