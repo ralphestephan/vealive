@@ -58,15 +58,24 @@ export default function SiteFooter() {
     try {
       setStatus("loading");
       setMsg("");
-      await new Promise((r) => setTimeout(r, 600)); // simulate
+  
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+  
+      if (!res.ok) throw new Error("Request failed");
+  
       setStatus("ok");
-      setMsg("Thanks for subscribing!");
+      setMsg("Thanks! We’ll be in touch soon.");
       setEmail("");
     } catch {
       setStatus("err");
       setMsg("Subscription failed. Please try again.");
     }
   }
+  
 
   return (
     <footer

@@ -134,7 +134,7 @@ const faqCategories = [
       {
         question: "How do I contact support?",
         answer:
-          "Email sales@vealive360.com or message us on WhatsApp at +961 81 632 241. You can also use the contact form for non-urgent requests.",
+          "Email info@vealive360.com or message us on WhatsApp at +961 81 632 241. You can also use the contact form for non-urgent requests.",
       },
       {
         question: "Are software updates free?",

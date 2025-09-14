@@ -10,6 +10,7 @@ import Reveal from "@/components/ui/Reveal";
 import { CartProvider } from "@/components/cart/CartContext";
 import CartButton from "@/components/cart/CartButton";
 import CartDrawer from "@/components/cart/CartDrawer";
+import FloatingCartButton from "@/components/cart/FloatingCartButton";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -149,7 +150,7 @@ export default function Page({
                 </div>
               </div>
 
-              {/* Cart button (top-right) */}
+              {/* Cart button (top-right desktop) */}
               <div className="hidden md:block">
                 <CartButton />
               </div>
@@ -207,7 +208,7 @@ export default function Page({
               )}
             </form>
 
-            {/* Category pills (links with cat=) */}
+            {/* Category pills */}
             <div className="mt-4 flex flex-wrap gap-2">
               <Link
                 href="/ecommerce"
@@ -241,13 +242,13 @@ export default function Page({
           </div>
         </section>
 
-        {/* CART BUTTON (mobile) */}
+        {/* CART BUTTON (mobile inline) */}
         <div className="mx-auto max-w-6xl px-4 md:hidden mb-4">
           <CartButton className="w-full justify-center" />
         </div>
 
-        {/* GRID */}
-        <section className="pb-6">
+        {/* GRID (anchor for floating cart visibility) */}
+        <section id="shop-grid" className="pb-6">
           <Reveal>
             <EcommerceGrid products={filtered} />
           </Reveal>
@@ -256,14 +257,8 @@ export default function Page({
         <CTA />
         <TrustSignals />
 
-        {/* Floating cart (mobile, top-right) */}
-        <div
-          className="md:hidden fixed right-4 z-[60]"
-          style={{ top: "calc(env(safe-area-inset-top, 0px) + 64px)" }} // sits below your header
-        >
-          <CartButton />
-        </div>
-
+        {/* Floating cart only while #shop-grid is in view, and hidden when drawer is open */}
+        <FloatingCartButton anchor="#shop-grid" topOffset={64} />
 
         <CartDrawer />
       </main>

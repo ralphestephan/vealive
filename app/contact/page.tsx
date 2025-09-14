@@ -1,27 +1,76 @@
 // app/contact/page.tsx
-import type { Metadata } from "next";
+"use client"
 import SEOJsonLd from "@/components/SEOJsonLd";
 import { SITE } from "@/lib/site";
 import DynamicUnderline from "@/components/ui/DynamicUnderline";
 import { MessageCircle, Mail, Phone, Clock } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
 
-export const metadata: Metadata = {
-  title: "Contact VeaLive360 — Free Smart Home Consultation in Lebanon",
-  description:
-    "Book a free consultation with VeaLive360 to explore lighting, climate, security, entertainment, energy, studio and Smart Dome automation tailored to your space.",
-  alternates: { canonical: "/contact" },
-  openGraph: {
-    title: "Contact VeaLive360",
-    description:
-      "Tell us about your space—get a tailored smart home plan for comfort, wellness, and simplicity.",
-    url: `${SITE.baseUrl}/contact`,
-    images: [{ url: SITE.ogImage }],
-  },
-  twitter: { card: "summary_large_image", site: "@vealive360" },
-};
 
 export default function Page() {
+  const [status, setStatus] = useState<"idle" | "loading" | "ok" | "err">("idle");
+  const [msg, setMsg] = useState("");
+  
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+  
+    setStatus("loading");
+    setMsg("");
+  
+    // ✅ capture the form element BEFORE any await
+    const formEl = e.currentTarget;
+  
+    // build the payload (handles multi-value checkboxes)
+    const fd = new FormData(formEl);
+    const data: Record<string, any> = {};
+    fd.forEach((val, key) => {
+      if (key in data) {
+        data[key] = Array.isArray(data[key]) ? [...data[key], val] : [data[key], val];
+      } else {
+        data[key] = val;
+      }
+    });
+  
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+  
+      console.log("📡 /api/contact -> status:", res.status, "ok:", res.ok);
+  
+      // ❌ Only parse JSON if we're actually in an error state
+      if (!res.ok) {
+        let errJson: any = {};
+        try {
+          errJson = await res.json();
+        } catch (parseErr) {
+          console.warn("⚠️ could not parse error JSON:", parseErr);
+        }
+        throw new Error(errJson?.error || `Request failed with ${res.status}`);
+      }
+  
+      // ✅ Success path — do NOT parse JSON again
+      setStatus("ok");
+      setMsg("✅ Your request was sent successfully! We’ll get back to you soon.");
+  
+      // ✅ use the captured form element; don't touch e.currentTarget after awaits
+      formEl.reset();
+  
+      return; // stop here; don't fall through
+    } catch (err) {
+      console.error("❌ Contact form error (frontend):", err);
+      setStatus("err");
+      setMsg("❌ Something went wrong. Please try again.");
+    }
+  }
+  
+  
+  
+  
+
   return (
     <div className="w-full overflow-x-clip relative">
       {/* Full-page background */}
@@ -57,7 +106,6 @@ export default function Page() {
 
       {/* HERO */}
       <section id="contact-hero" className="mt-0.3 mb-12 relative">
-
         <div className="mx-auto max-w-6xl px-4 text-center">
           <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
             Free consultation
@@ -68,13 +116,18 @@ export default function Page() {
             </span>
           </h1>
 
-          {/* Dynamic underline (centered) */}
           <div className="mt-3">
-            <DynamicUnderline watch="#contact-hero" align="center" widthClass="w-20" height={4} />
+            <DynamicUnderline
+              watch="#contact-hero"
+              align="center"
+              widthClass="w-20"
+              height={4}
+            />
           </div>
 
           <p className="mt-3 text-zinc-700 max-w-2xl mx-auto">
-            We’ll recommend a tailored plan for comfort, wellness, and simplicity—at home or work.
+            We’ll recommend a tailored plan for comfort, wellness, and simplicity—at
+            home or work.
           </p>
         </div>
       </section>
@@ -84,322 +137,270 @@ export default function Page() {
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* LEFT: Quick channels & info */}
           <aside className="space-y-6 lg:sticky lg:top-20 h-fit">
-            <div id="quick-ways" className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
+            <div
+              id="quick-ways"
+              className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft"
+            >
               <h2 className="text-xl font-bold">Quick ways to reach us</h2>
               <div className="mt-2">
-                <DynamicUnderline watch="#quick-ways" align="left" widthClass="w-20" height={4} />
+                <DynamicUnderline
+                  watch="#quick-ways"
+                  align="left"
+                  widthClass="w-20"
+                  height={4}
+                />
               </div>
 
               <div className="mt-4 grid gap-3">
-                {/* WhatsApp */}
                 <a
                   href="https://wa.me/96181632241?text=Hello%20VeaLive%20%F0%9F%91%8B"
                   target="_blank"
                   rel="noreferrer"
-                  className="
-                    group flex items-center gap-3 p-3 rounded-xl border border-zinc-200 bg-white
-                    hover:border-brand-green hover:bg-brand-green/5 transition-all
-                  "
+                  className="group flex items-center gap-3 p-3 rounded-xl border border-zinc-200 bg-white hover:border-brand-green hover:bg-brand-green/5 transition-all"
                 >
                   <span className="w-9 h-9 rounded-lg bg-brand-green/10 text-brand-green inline-grid place-items-center">
                     <MessageCircle className="w-4 h-4" aria-hidden />
                   </span>
                   <div className="min-w-0">
                     <div className="font-semibold">WhatsApp</div>
-                    <div className="text-xs text-zinc-600 truncate">+961 81 632 241</div>
+                    <div className="text-xs text-zinc-600 truncate">
+                      +961 81 632 241
+                    </div>
                   </div>
-                  <span className="ml-auto text-xs font-semibold text-brand-green opacity-0 group-hover:opacity-100 transition">
-                    Open
-                  </span>
                 </a>
 
-                {/* Email */}
                 <a
-                  href="mailto:sales@vealive360.com"
-                  className="
-                    group flex items-center gap-3 p-3 rounded-xl border border-zinc-200 bg-white
-                    hover:border-brand-blue hover:bg-brand-blue/5 transition-all
-                  "
+                  href="mailto:info@vealive360.com"
+                  className="group flex items-center gap-3 p-3 rounded-xl border border-zinc-200 bg-white hover:border-brand-blue hover:bg-brand-blue/5 transition-all"
                 >
                   <span className="w-9 h-9 rounded-lg bg-brand-blue/10 text-brand-blue inline-grid place-items-center">
                     <Mail className="w-4 h-4" aria-hidden />
                   </span>
                   <div className="min-w-0">
                     <div className="font-semibold">Email</div>
-                    <div className="text-xs text-zinc-600 truncate">sales@vealive360.com</div>
+                    <div className="text-xs text-zinc-600 truncate">
+                      info@vealive360.com
+                    </div>
                   </div>
-                  <span className="ml-auto text-xs font-semibold text-brand-blue opacity-0 group-hover:opacity-100 transition">
-                    Compose
-                  </span>
                 </a>
 
-                {/* Phone */}
                 <a
                   href="tel:+96181632241"
-                  className="
-                    group flex items-center gap-3 p-3 rounded-xl border border-zinc-200 bg-white
-                    hover:border-brand-blue hover:bg-brand-blue/5 transition-all
-                  "
+                  className="group flex items-center gap-3 p-3 rounded-xl border border-zinc-200 bg-white hover:border-brand-blue hover:bg-brand-blue/5 transition-all"
                 >
                   <span className="w-9 h-9 rounded-lg bg-zinc-100 text-zinc-800 inline-grid place-items-center">
                     <Phone className="w-4 h-4" aria-hidden />
                   </span>
                   <div className="min-w-0">
                     <div className="font-semibold">Call</div>
-                    <div className="text-xs text-zinc-600 truncate">+961 81 632 241</div>
+                    <div className="text-xs text-zinc-600 truncate">
+                      +961 81 632 241
+                    </div>
                   </div>
-                  <span className="ml-auto text-xs font-semibold text-brand-blue opacity-0 group-hover:opacity-100 transition">
-                    Dial
-                  </span>
                 </a>
               </div>
 
               <div className="mt-4 flex items-start gap-2 text-sm text-zinc-600">
                 <Clock className="w-4 h-4 mt-0.5 text-zinc-500" aria-hidden />
                 <div>
-                  <div><strong>Response time:</strong> usually same day</div>
-                  <div className="text-xs">Hours: Mon–Sat, 9:00–18:00 (Asia/Beirut)</div>
+                  <div>
+                    <strong>Response time:</strong> usually same day
+                  </div>
+                  <div className="text-xs">
+                    Hours: Mon–Sat, 9:00–18:00 (Asia/Beirut)
+                  </div>
                 </div>
               </div>
-            </div>
-
-            {/* FAQ teaser */}
-            <div id="faq-teaser" className="p-6 rounded-card bg-white border border-zinc-100 shadow-soft">
-              <h2 className="text-lg font-bold">Have a quick question?</h2>
-              <div className="mt-2">
-                <DynamicUnderline watch="#faq-teaser" align="left" widthClass="w-16" height={4} />
-              </div>
-              <p className="mt-2 text-sm text-zinc-600">
-                Check common answers about compatibility, install, privacy, and support.
-              </p>
-              <Link
-                href="/faqs"
-                className="
-                  mt-3 inline-flex items-center justify-center px-4 h-9 rounded-full
-                  border border-zinc-300 hover:border-brand-blue hover:text-brand-blue
-                  transition-all text-sm font-semibold
-                "
-              >
-                View FAQs
-              </Link>
             </div>
           </aside>
 
           {/* RIGHT: Form */}
           <div className="lg:col-span-2">
-            <section id="contact-form" className="p-6 md:p-8 rounded-card bg-white border border-zinc-100 shadow-soft">
+            <section
+              id="contact-form"
+              className="p-6 md:p-8 rounded-card bg-white border border-zinc-100 shadow-soft"
+            >
               <h2 className="text-2xl font-bold">Send a request</h2>
               <div className="mt-2">
-                <DynamicUnderline watch="#contact-form" align="left" widthClass="w-20" height={4} />
+                <DynamicUnderline
+                  watch="#contact-form"
+                  align="left"
+                  widthClass="w-20"
+                  height={4}
+                />
               </div>
 
-              <form
-                className="mt-6 space-y-6"
-                action="mailto:sales@vealive360.com"
-                method="post"
-                encType="text/plain"
-                aria-labelledby="contact-heading"
-              >
-                {/* Honeypot (spam trap) */}
-                <input type="text" name="hp" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+              <form className="mt-6 space-y-6" onSubmit={handleSubmit}>
+                {/* Honeypot */}
+                <input
+                  type="text"
+                  name="hp"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  className="hidden"
+                  aria-hidden="true"
+                />
 
-                {/* Your details */}
-                <div className="space-y-2">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                    Your details
+                {/* Details */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Full name</label>
+                    <input
+                      name="name"
+                      required
+                      autoComplete="name"
+                      className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:ring-2 focus:ring-brand-blue"
+                    />
                   </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="name" className="block text-sm font-medium mb-1">
-                        Full name
-                      </label>
-                      <input
-                        id="name"
-                        name="name"
-                        required
-                        autoComplete="name"
-                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="phone" className="block text-sm font-medium mb-1">
-                        Phone (optional)
-                      </label>
-                      <input
-                        id="phone"
-                        name="phone"
-                        autoComplete="tel"
-                        inputMode="tel"
-                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="email" className="block text-sm font-medium mb-1">
-                        Email
-                      </label>
-                      <input
-                        id="email"
-                        name="email"
-                        type="email"
-                        required
-                        autoComplete="email"
-                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                      />
-                    </div>
-                    <div>
-                      <label htmlFor="city" className="block text-sm font-medium mb-1">
-                        City
-                      </label>
-                      <input
-                        id="city"
-                        name="city"
-                        defaultValue="Beirut"
-                        autoComplete="address-level2"
-                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                      />
-                    </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Phone</label>
+                    <input
+                      name="phone"
+                      autoComplete="tel"
+                      className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:ring-2 focus:ring-brand-blue"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Email</label>
+                    <input
+                      type="email"
+                      name="email"
+                      required
+                      autoComplete="email"
+                      className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:ring-2 focus:ring-brand-blue"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-1">City</label>
+                    <input
+                      name="city"
+                      defaultValue="Beirut"
+                      autoComplete="address-level2"
+                      className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:ring-2 focus:ring-brand-blue"
+                    />
                   </div>
                 </div>
 
                 {/* Project */}
-                <div className="space-y-2">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                    Project
-                  </div>
-
-                  {/* Reason */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="reason" className="block text-sm font-medium mb-1">
-                        I’m looking for
-                      </label>
-                      <select
-                        id="reason"
-                        name="reason"
-                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                      >
-                        <option value="">Select…</option>
-                        <option>New smart setup</option>
-                        <option>Upgrade existing system</option>
-                        <option>Troubleshooting / support</option>
-                        <option>Smart Dome</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label htmlFor="budget" className="block text-sm font-medium mb-1">
-                        Estimated budget
-                      </label>
-                      <select
-                        id="budget"
-                        name="budget"
-                        className="w-full rounded-xl border border-zinc-300 px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                      >
-                        <option value="">Select…</option>
-                        <option>Under $1,000</option>
-                        <option>$1,000–$3,000</option>
-                        <option>$3,000–$7,500</option>
-                        <option>$7,500+</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  {/* Solutions of interest */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Solutions of interest</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
-                      {["Lighting", "Climate", "Security", "Energy", "Entertainment", "Device Tailoring", "Utility", "Smart Dome"].map((s) => (
-                        <label key={s} className="inline-flex items-center gap-2">
-                          <input type="checkbox" name="solutions" value={s} className="peer sr-only" />
-                          <span
-                            className="
-                              w-full border border-zinc-300 rounded-full px-3 py-2
-                              peer-checked:border-brand-blue peer-checked:bg-brand-blue/10 peer-checked:text-brand-blue
-                              transition-colors
-                            "
-                          >
-                            {s}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                    <label className="block text-sm font-medium mb-1">I’m looking for</label>
+                    <select name="reason" className="w-full rounded-xl border px-3 py-2">
+                      <option value="">Select…</option>
+                      <option>New smart setup</option>
+                      <option>Upgrade existing system</option>
+                      <option>Troubleshooting / support</option>
+                      <option>Smart Dome</option>
+                    </select>
                   </div>
-
-                  {/* Preferred ecosystem */}
                   <div>
-                    <label className="block text-sm font-medium mb-2">Preferred ecosystem (optional)</label>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                      {["DIY Open-Source", "Apple Home", "Google Home", "Amazon Alexa", "SmartThings"].map((p) => (
-                        <label key={p} className="inline-flex items-center gap-2">
-                          <input type="checkbox" name="platform" value={p} className="peer sr-only" />
-                          <span
-                            className="
-                              w-full text-sm border border-zinc-300 rounded-full px-3 py-2
-                              peer-checked:border-brand-green peer-checked:bg-brand-green/10 peer-checked:text-brand-green
-                              transition-colors
-                            "
-                          >
-                            {p}
-                          </span>
-                        </label>
-                      ))}
-                    </div>
+                    <label className="block text-sm font-medium mb-1">Estimated budget</label>
+                    <select name="budget" className="w-full rounded-xl border px-3 py-2">
+                      <option value="">Select…</option>
+                      <option>Under $1,000</option>
+                      <option>$1,000–$3,000</option>
+                      <option>$3,000–$7,500</option>
+                      <option>$7,500+</option>
+                    </select>
+                  </div>
+                </div>
+
+                {/* Solutions */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Solutions of interest</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                    {[
+                      "Lighting",
+                      "Climate",
+                      "Security",
+                      "Energy",
+                      "Entertainment",
+                      "Device Tailoring",
+                      "Utility",
+                      "Smart Dome",
+                    ].map((s) => (
+                      <label key={s} className="inline-flex items-center gap-2">
+                        <input type="checkbox" name="solutions" value={s} className="sr-only peer" />
+                        <span className="w-full border rounded-full px-3 py-2 peer-checked:border-brand-blue peer-checked:bg-brand-blue/10 peer-checked:text-brand-blue">
+                          {s}
+                        </span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Ecosystem */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Preferred ecosystem</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {[
+                      "DIY Open-Source",
+                      "Apple Home",
+                      "Google Home",
+                      "Amazon Alexa",
+                      "SmartThings",
+                    ].map((p) => (
+                      <label key={p} className="inline-flex items-center gap-2">
+                        <input type="checkbox" name="platform" value={p} className="sr-only peer" />
+                        <span className="w-full border rounded-full px-3 py-2 peer-checked:border-brand-green peer-checked:bg-brand-green/10 peer-checked:text-brand-green text-sm">
+                          {p}
+                        </span>
+                      </label>
+                    ))}
                   </div>
                 </div>
 
                 {/* Message */}
-                <div className="space-y-2">
-                  <div className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-                    Message
-                  </div>
-                  <label htmlFor="message" className="sr-only">
-                    Message
-                  </label>
+                <div>
                   <textarea
-                    id="message"
                     name="message"
                     rows={6}
-                    className="w-full rounded-xl border border-zinc-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-blue transition-shadow"
-                    placeholder="Tell us about your rooms, devices, preferred brands, or Smart Dome site (rooftop, garden, plot)…"
+                    placeholder="Tell us about your rooms, devices, brands, or Smart Dome site…"
+                    className="w-full rounded-xl border px-3 py-2 focus:ring-2 focus:ring-brand-blue"
                   />
-                    <label className="mt-2 inline-flex items-center gap-2 text-sm">
-                      <input type="checkbox" name="contact_pref" value="WhatsApp" />
-                      Prefer WhatsApp follow-up
-                    </label>
+                  <label className="mt-2 inline-flex items-center gap-2 text-sm">
+                    <input type="checkbox" name="contact_pref" value="WhatsApp" />
+                    Prefer WhatsApp follow-up
+                  </label>
                 </div>
 
                 {/* Actions */}
                 <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
                   <button
                     type="submit"
-                    className="
-                      relative px-5 py-3 rounded-full bg-brand-blue text-white font-semibold
-                      transition-all duration-200
-                      hover:shadow-lg hover:brightness-110 active:scale-[0.98]
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-blue/60
-                    "
+                    disabled={status === "loading"}
+                    className="px-5 py-3 rounded-full bg-brand-blue text-white font-semibold hover:brightness-110 disabled:opacity-60"
                   >
-                    Send request
+                    {status === "loading" ? "Sending…" : "Send request"}
                   </button>
                   <a
                     href="https://wa.me/96181632241?text=Hello%20VeaLive%20%F0%9F%91%8B"
                     target="_blank"
                     rel="noreferrer"
-                    className="
-                      px-5 py-3 rounded-full border border-zinc-300 font-semibold
-                      transition-all duration-200
-                      hover:border-brand-green hover:text-brand-green hover:shadow
-                      active:scale-[0.98]
-                      focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-green/40
-                    "
+                    className="px-5 py-3 rounded-full border font-semibold hover:border-brand-green hover:text-brand-green"
                   >
                     Chat on WhatsApp
                   </a>
-                  <span className="text-xs text-zinc-500 sm:ml-auto">We’ll reply within 1–2 business days.</span>
+                  <span className="text-xs text-zinc-500 sm:ml-auto">
+                    We’ll reply within 1–2 business days.
+                  </span>
                 </div>
 
-                {/* Privacy note */}
+                {status !== "idle" && (
+  <div
+    className={`mt-3 px-4 py-2 rounded-lg text-sm font-medium ${
+      status === "ok"
+        ? "bg-green-50 text-green-700 border border-green-200"
+        : status === "err"
+        ? "bg-red-50 text-red-700 border border-red-200"
+        : "text-zinc-500"
+    }`}
+  >
+    {msg}
+  </div>
+)}
+
+
                 <p className="text-xs text-zinc-500">
                   By submitting, you agree to our{" "}
                   <Link href="/privacy" className="underline hover:text-brand-blue">
@@ -412,17 +413,14 @@ export default function Page() {
           </div>
         </div>
 
-        {/* Email fallback */}
         <div className="mt-8 text-center text-sm text-zinc-600 px-4">
           Prefer email? Write to{" "}
-          <a className="text-brand-blue font-semibold" href="mailto:sales@vealive360.com">
-            sales@vealive360.com
+          <a className="text-brand-blue font-semibold" href="mailto:info@vealive360.com">
+            info@vealive360.com
           </a>
           .
         </div>
-        
       </section>
-      
     </div>
   );
 }
