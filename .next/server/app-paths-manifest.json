@@ -1,7 +1,5 @@
 {
-  "/checkout/page": "app/checkout/page.js",
   "/ecommerce/page": "app/ecommerce/page.js",
-  "/solutions/page": "app/solutions/page.js",
-  "/api/orders/route": "app/api/orders/route.js",
-  "/order/[number]/page": "app/order/[number]/page.js"
+  "/order/[number]/page": "app/order/[number]/page.js",
+  "/checkout/page": "app/checkout/page.js"
 }
