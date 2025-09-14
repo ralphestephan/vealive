@@ -75,7 +75,7 @@ export default function Page() {
 
       {/* LIST */}
       <section className="pb-16">
-        <div className=" max-w-6xl px-4 ">
+        <div className=" mx-auto max-w-6xl px-4 ">
           {/* InsightsIndex already renders cards; it’ll inherit our scroll reveal/utilities */}
           <InsightsIndex posts={insights} />
         </div>

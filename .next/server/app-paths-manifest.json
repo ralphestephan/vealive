@@ -1,5 +1,7 @@
 {
-  "/checkout/page": "app/checkout/page.js",
+  "/solutions/page": "app/solutions/page.js",
+  "/solutions/[slug]/page": "app/solutions/[slug]/page.js",
+  "/homedome/page": "app/homedome/page.js",
   "/ecommerce/page": "app/ecommerce/page.js",
-  "/order/[number]/page": "app/order/[number]/page.js"
+  "/ecommerce/[handle]/page": "app/ecommerce/[handle]/page.js"
 }

@@ -13,6 +13,7 @@ export type Product = {
   img: string;
   category: "Lighting" | "Climate" | "Security" | "Audio" | "Hubs" | "Other";
   tags?: string[];
+  available?: boolean;
 };
 
 export default function EcommerceGrid({ products }: { products: Product[] }) {
@@ -57,10 +58,12 @@ export default function EcommerceGrid({ products }: { products: Product[] }) {
             </Link>
 
               <button
-                onClick={() => add({ id: p.id, title: p.title, price: p.price, img: p.img }, 1)}
-                className="shrink-0 px-4 h-10 inline-flex items-center justify-center rounded-full border border-zinc-300 text-sm font-semibold hover:border-brand-blue"
-              >
-                Add to cart
+                onClick={() => p.available && add({ id: p.id, title: p.title, price: p.price, img: p.img }, 1)}
+                disabled={!p.available}
+                className={`shrink-0 px-4 h-10 inline-flex items-center justify-center rounded-full border text-sm font-semibold
+                  ${p.available ? "border-zinc-300 hover:border-brand-blue" : "border-zinc-200 text-zinc-400 cursor-not-allowed"}`}
+    >
+                {p.available ? "Add to cart" : "Sold out"}
               </button>
             </div>
           </article>

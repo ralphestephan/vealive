@@ -13,6 +13,18 @@ import {
   Phone,
   X as CloseIcon,
 } from "lucide-react";
+import { FaTiktok } from "react-icons/fa";
+
+// Minimal brand marks (inline SVGs)
+function XLogo(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden {...props}>
+      <path d="M18.146 3H21l-7.47 8.54L22.5 21h-6.03l-4.72-5.77L5.5 21H3l7.9-9.02L1.5 3h6.03l4.33 5.29L18.146 3Z"/>
+    </svg>
+  );
+}
+
+
 
 export default function SiteFooter() {
   const links: [string, string][] = [
@@ -124,21 +136,30 @@ export default function SiteFooter() {
             </a>
           </div>
 
-          {/* Socials (tight + wrap) */}
-          <div className="mt-4 md:mt-6 flex flex-wrap items-center gap-2">
-            <a aria-label="Instagram" href="#" className="inline-grid place-items-center size-9 rounded-full border border-zinc-200 hover:border-brand-green transition">
-              <Instagram className="h-4 w-4" />
-            </a>
-            <a aria-label="Facebook" href="#" className="inline-grid place-items-center size-9 rounded-full border border-zinc-200 hover:border-brand-green transition">
-              <Facebook className="h-4 w-4" />
-            </a>
-            <a aria-label="LinkedIn" href="#" className="inline-grid place-items-center size-9 rounded-full border border-zinc-200 hover:border-brand-green transition">
-              <Linkedin className="h-4 w-4" />
-            </a>
-            <a aria-label="YouTube" href="#" className="inline-grid place-items-center size-9 rounded-full border border-zinc-200 hover:border-brand-green transition">
-              <Youtube className="h-4 w-4" />
-            </a>
-          </div>
+{/* Socials */}
+<div className="mt-4 md:mt-6 flex flex-wrap items-center gap-2">
+  {[
+    { label: "Instagram", href: "https://www.instagram.com/vealive360", Icon: Instagram },
+    { label: "Facebook",  href: "https://www.facebook.com/Vealive3d",  Icon: Facebook  },
+    { label: "LinkedIn",  href: "https://lb.linkedin.com/company/vealive-360?trk=public_post_feed-actor-name", Icon: Linkedin },
+    { label: "YouTube",   href: "https://www.youtube.com/@vealive3606", Icon: Youtube  },
+    // New ones:
+    { label: "X",        href: "https://x.com/Vealive326022", Icon: XLogo },
+    { label: "TikTok",   href: "https://tiktok.com/@vealive360?lang=en", Icon: FaTiktok },
+  ].map(({ label, href, Icon }) => (
+    <a
+      key={label}
+      aria-label={label}
+      href={href}
+      target="_blank"
+      rel="noreferrer"
+      className="inline-grid place-items-center size-9 rounded-full border border-zinc-200 hover:border-brand-green transition"
+    >
+      <Icon className="h-4 w-4" />
+    </a>
+  ))}
+</div>
+
         </div>
 
         {/* EXPLORE */}

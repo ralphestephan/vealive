@@ -227,10 +227,22 @@ export default function Page({ params }: Props) {
       <section id="solution-hero" className="mt-0.5 mb-14">
         <div className="mx-auto max-w-6xl px-4 grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
           <Reveal className="space-y-6">
-            {/* Removed "Back to all solutions" link */}
-            <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
-              {badge}
-            </span>
+                {/* NEW breadcrumb */}
+      <div className="inline-flex items-center gap-2 text-xs">
+        <Link
+          href="/solutions"
+          className="inline-flex items-center gap-1 rounded-full border border-zinc-200 bg-white/70 px-3 py-1 text-zinc-700 hover:border-brand-blue hover:text-brand-blue transition"
+          aria-label="Solutions"
+        >
+          Solutions
+        </Link>
+        <span className="text-zinc-400">/</span>
+        <span className="px-3 py-1 rounded-full bg-zinc-100 text-zinc-600">
+          {badge}
+        </span>
+      </div>
+
+
 
             <h1 className="text-4xl md:text-5xl font-extrabold leading-tight tracking-tight">
               <span className="bg-gradient-to-r from-brand-blue to-brand-green bg-clip-text text-transparent">
@@ -248,9 +260,7 @@ export default function Page({ params }: Props) {
               <Link href="/contact" className="px-5 py-3 rounded-full bg-brand-green text-white font-semibold">
                 Book a Free Consultation
               </Link>
-              <Link href="/solutions" className="px-5 py-3 rounded-full border border-zinc-300 hover:border-brand-blue">
-                All Solutions
-              </Link>
+
             </div>
           </Reveal>
 
@@ -354,9 +364,8 @@ export default function Page({ params }: Props) {
                     className="flex items-center gap-2 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-2"
                     title={label}
                   >
-                    <span className="inline-grid place-items-center h-8 w-8 rounded-full bg-white border border-zinc-200">
-                      <Icon className="h-4 w-4 text-zinc-700" />
-                    </span>
+                       <Icon className="h-6 w-6 text-zinc-700" />
+                    
                     <span className="text-xs font-medium text-zinc-700">{label}</span>
                   </div>
                 ))}
