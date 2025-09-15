@@ -1,4 +1,9 @@
+// lib/shopify.ts (or wherever getProducts lives)
 import 'server-only';
+import { guessCategoryFromShopify } from "./catalog";
+import type { Product as UiProduct } from "@/components/EcommerceGrid";
+
+
 
 const domain = process.env.SHOPIFY_STORE_DOMAIN!; // e.g. my-store.myshopify.com
 const token = process.env.SHOPIFY_STOREFRONT_ACCESS_TOKEN!;
@@ -20,64 +25,49 @@ export async function shopifyFetch<T>(query: string, variables?: Record<string, 
   return json.data;
 }
 
+
 const PRODUCTS_QUERY = /* GraphQL */ `
-  query Products($first: Int = 50) {
-    products(first: $first, sortKey: TITLE) {
-      edges { node {
+  query Products($first: Int!) {
+    products(first: $first) {
+      nodes {
         id
-        handle
         title
+        handle
         description
         productType
+        vendor
         tags
-        images(first: 1) { nodes { url altText } }
-        variants(first: 1) { nodes { id availableForSale price { amount currencyCode } } }
-        priceRange { minVariantPrice { amount currencyCode } }
-      }}
+        featuredImage { url }
+        variants(first: 1) {
+          nodes {
+            id
+            price { amount }
+            availableForSale
+          }
+        }
+      }
     }
   }
 `;
 
-export type CatalogProduct = {
-  id: string;            // we’ll keep VARIANT ID if present, else product id
-  title: string;
-  desc: string;
-  price: number;
-  img: string;
-  available: boolean;
-  category: 'Lighting' | 'Climate' | 'Security' | 'Audio' | 'Hubs' | 'Other';
-  tags?: string[];
-  handle: string;
-  currency: string;
-};
-
-function mapTypeToCategory(t?: string): CatalogProduct['category'] {
-  const v = (t || '').toLowerCase();
-  if (v === 'lighting') return 'Lighting';
-  if (v === 'climate') return 'Climate';
-  if (v === 'security') return 'Security';
-  if (v === 'audio') return 'Audio';
-  if (v === 'hubs') return 'Hubs';
-  return 'Other';
-}
-
-export async function getProducts(limit = 50): Promise<CatalogProduct[]> {
-  type Resp = { products: { edges: { node: any }[] } };
-  const data = await shopifyFetch<Resp>(PRODUCTS_QUERY, { first: limit });
-  return data.products.edges.map(({ node }) => {
-    const v = node.variants?.nodes?.[0];
-    const price = parseFloat(v?.price?.amount ?? node.priceRange.minVariantPrice.amount);
+export async function getProducts(first = 60): Promise<UiProduct[]> {
+  const { products } = await shopifyFetch<{ products: { nodes: any[] } }>(PRODUCTS_QUERY, { first });
+  return (products?.nodes ?? []).map((p) => {
+    const v0 = p.variants?.nodes?.[0];
+    const category = guessCategoryFromShopify(p); // <-- THE FIX
     return {
-      id: v?.id ?? node.id,
-      title: node.title,
-      desc: node.description,
-      price,
-      img: node.images?.nodes?.[0]?.url ?? '',
-      available: v?.availableForSale ?? true,
-      category: mapTypeToCategory(node.productType),
-      tags: node.tags,
-      handle: node.handle,
-      currency: v?.price?.currencyCode ?? node.priceRange.minVariantPrice.currencyCode,
-    } as CatalogProduct;
+      id: v0?.id ?? p.id,                           // use variant id for cart lines
+      title: p.title,
+      desc: p.description?.slice(0, 180) || "",
+      price: Number(v0?.price?.amount ?? 0),
+      img: p.featuredImage?.url || "/images/placeholders/product.jpg",
+      category,                                     // <-- THE FIX (not "Other")
+      available: !!v0?.availableForSale,
+      // (optional) add handle/tags if your grid uses them
+      // @ts-ignore - extend type if you want these officially typed
+      handle: p.handle,
+      // @ts-ignore
+      tags: p.tags,
+    } as UiProduct;
   });
 }

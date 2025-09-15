@@ -12,9 +12,11 @@ export type Product = {
   price: number;        // numeric for sorting + JSON-LD
   img: string;
   category: "Lighting" | "Climate" | "Security" | "Audio" | "Hubs" | "Other";
-  tags?: string[];
   available?: boolean;
 };
+
+
+
 
 export default function EcommerceGrid({ products }: { products: Product[] }) {
   const { add } = useCart();

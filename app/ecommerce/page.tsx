@@ -30,32 +30,6 @@ export const metadata: Metadata = {
   robots: { index: true, follow: true },
 };
 
-function uniq<T>(arr: T[]) { return Array.from(new Set(arr)); }
-function filterProducts(all: Awaited<ReturnType<typeof getProducts>>, q?: string, cat?: string) {
-  let list = all;
-  if (cat) list = list.filter((p) => p.category.toLowerCase() === cat.toLowerCase());
-  if (q) {
-    const needle = q.toLowerCase();
-    list = list.filter((p) =>
-      p.title.toLowerCase().includes(needle) ||
-      p.desc.toLowerCase().includes(needle) ||
-      (p.tags ?? []).some((t) => t.toLowerCase().includes(needle))
-    );
-  }
-  return list;
-}
-function sortProducts<T extends { price: number; title: string }>(list: T[], sort?: string) {
-  switch (sort) {
-    case 'price-asc':
-      return [...list].sort((a, b) => a.price - b.price);
-    case 'price-desc':
-      return [...list].sort((a, b) => b.price - a.price);
-    case 'alpha':
-      return [...list].sort((a, b) => a.title.localeCompare(b.title));
-    default:
-      return list;
-  }
-}
 
 export default async function Page({ searchParams }: { searchParams?: { q?: string; cat?: string; sort?: string } }) {
   const q = searchParams?.q?.trim() || '';
@@ -67,10 +41,7 @@ export default async function Page({ searchParams }: { searchParams?: { q?: stri
   const filtered = (() => {
     let list = all;
     if (cat) list = list.filter((p) => p.category.toLowerCase() === cat.toLowerCase());
-    if (q) {
-      const needle = q.toLowerCase();
-      list = list.filter((p) => p.title.toLowerCase().includes(needle) || p.desc.toLowerCase().includes(needle) || (p.tags ?? []).some((t) => t.toLowerCase().includes(needle)));
-    }
+
     switch (sort) {
       case 'price-asc': return [...list].sort((a,b)=>a.price-b.price);
       case 'price-desc': return [...list].sort((a,b)=>b.price-a.price);
