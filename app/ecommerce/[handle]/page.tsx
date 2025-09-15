@@ -8,7 +8,6 @@ import { Product } from "@/components/EcommerceGrid";
 import { guessCategoryFromShopify } from "@/lib/catalog";
 
 
-
 // ---------- query ----------
 const PRODUCT_QUERY = /* GraphQL */ `
   query Product($handle: String!) {
@@ -231,7 +230,9 @@ export default async function Page({ params }: { params: { handle: string } }) {
         </div>
       </section>
     </main>
+     
   );
+ 
 }
 
 

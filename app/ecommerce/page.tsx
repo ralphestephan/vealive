@@ -7,7 +7,6 @@ import SEOJsonLd from '@/components/SEOJsonLd';
 import { SITE } from '@/lib/site';
 import DynamicUnderline from '@/components/ui/DynamicUnderline';
 import Reveal from '@/components/ui/Reveal';
-import { CartProvider } from '@/components/cart/CartContext';
 import CartButton from '@/components/cart/CartButton';
 import CartDrawer from '@/components/cart/CartDrawer';
 import FloatingCartButton from '@/components/cart/FloatingCartButton';

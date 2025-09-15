@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 
 import { Factory, Package, Tags as TagsIcon } from "lucide-react";
+import CartDrawer from '@/components/cart/CartDrawer';
+
 
 
 // ---------- icon picking ----------
@@ -131,8 +133,10 @@ export default function ProductDetailClient({
 return (
   <>
     <div className="space-y-6">
+      
       {/* Title */}
       <div>
+        
         <span className="inline-flex items-center px-3 py-1 rounded-full bg-zinc-100 text-xs font-medium">
           {category || product.productType || "Device"}
         </span>
@@ -169,6 +173,7 @@ return (
             }`}
         >
           {inStock ? "Add to cart" : "Out of stock"}
+         
         </button>
 
         <Link
@@ -335,8 +340,11 @@ return (
 </div>
 
       </div>
-
+ <CartDrawer />
+ 
     </>
+    
   );
+
 }
 
